@@ -4,6 +4,22 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
 
 ## [Unreleased]
 
+### 2026-03-27 — Astronomer Cloud Deployment & CD Pipeline
+
+- **Astronomer Cloud Deployment** — Created production deployment `tlc-elt-pipeline`:
+  - Region: AWS us-east-1, Runtime 3.1-14 (Airflow 3.1.8)
+  - DAG deploy enabled, development mode (hibernation)
+  - Configured Snowflake connection (`snowflake_default`) with all credentials
+  - Set 10 environment variables (Snowflake config, Airflow variables, Slack webhook)
+  - Deployment API token stored as `ASTRO_API_TOKEN` GitHub secret
+  - Initial deploy successful (image + DAG bundle pushed)
+
+- **CD Workflow** (`.github/workflows/cd.yml`) — Automated deployment on push to `main`:
+  - Installs Astro CLI, authenticates, runs `astro deploy --force`
+  - Slack notifications on deploy success/failure via `ravsamhq/notify-slack-action`
+  - Concurrency control: sequential deploys (no cancel-in-progress)
+  - Path filter: only triggers on `astro-project/**` or `cd.yml` changes
+
 ### 2026-03-27 — README, dbt Mart Tests & Grafana Slack Notifications
 
 - **README.md** — Created project README with:

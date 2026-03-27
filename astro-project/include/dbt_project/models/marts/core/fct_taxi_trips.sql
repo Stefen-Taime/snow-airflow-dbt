@@ -16,11 +16,11 @@ SELECT
     t.passenger_count,
     t.trip_distance,
     t.pu_location_id,
-    pu_zone.zone_name     AS pickup_zone,
-    pu_zone.borough       AS pickup_borough,
+    pu_zone.zone_name AS pickup_zone,
+    pu_zone.borough AS pickup_borough,
     t.do_location_id,
-    do_zone.zone_name     AS dropoff_zone,
-    do_zone.borough       AS dropoff_borough,
+    do_zone.zone_name AS dropoff_zone,
+    do_zone.borough AS dropoff_borough,
     t.rate_code_id,
     rc.rate_code_name,
     t.payment_type_id,
@@ -36,21 +36,21 @@ SELECT
     t.airport_fee,
     t.cbd_congestion_fee,
     t.taxi_type
-FROM {{ ref('int_trips_unioned') }} t
-LEFT JOIN {{ ref('dim_zones') }} pu_zone
+FROM {{ ref('int_trips_unioned') }} AS t
+LEFT JOIN {{ ref('dim_zones') }} AS pu_zone
     ON t.pu_location_id = pu_zone.location_id
-LEFT JOIN {{ ref('dim_zones') }} do_zone
+LEFT JOIN {{ ref('dim_zones') }} AS do_zone
     ON t.do_location_id = do_zone.location_id
-LEFT JOIN {{ ref('rate_codes') }} rc
+LEFT JOIN {{ ref('rate_codes') }} AS rc
     ON t.rate_code_id = rc.rate_code_id
-LEFT JOIN {{ ref('payment_types') }} pt
+LEFT JOIN {{ ref('payment_types') }} AS pt
     ON t.payment_type_id = pt.payment_type_id
-LEFT JOIN {{ ref('vendor_lookup') }} v
+LEFT JOIN {{ ref('vendor_lookup') }} AS v
     ON t.vendor_id = v.vendor_id
 
 {% if is_incremental() %}
-WHERE t.pickup_datetime >= (
-    SELECT DATEADD('day', -3, MAX(pickup_datetime))
-    FROM {{ this }}
-)
+    WHERE t.pickup_datetime >= (
+        SELECT DATEADD('day', -3, MAX(pickup_datetime))
+        FROM {{ this }}
+    )
 {% endif %}

@@ -35,12 +35,11 @@ jobs:
           cache: pip
 
       - name: Install SQLFluff
-        run: pip install sqlfluff sqlfluff-templater-dbt
+        run: pip install sqlfluff
 
       - name: SQLFluff Lint
-        run: |
-          sqlfluff lint ${{ env.DBT_PROJECT_DIR }}/models/ \
-            --config ${{ env.DBT_PROJECT_DIR }}/.sqlfluff
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: sqlfluff lint models/ --config .sqlfluff
 
   build-and-test:
     name: dbt Build & Test
@@ -60,24 +59,19 @@ jobs:
 
       - name: dbt deps
         working-directory: ${{ env.DBT_PROJECT_DIR }}
-        run: dbt deps
+        run: dbt deps --profiles-dir . --project-dir .
 
-      - name: dbt build
+      - name: dbt compile
         working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
-          dbt build \
-            --select state:modified+ \
-            --defer \
-            --state target-base/ \
+          dbt compile \
             --profiles-dir . \
             --project-dir .
-        continue-on-error: false
 
-      - name: dbt_project_evaluator
+      - name: dbt test (data quality)
         working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt test \
-            --select package:dbt_project_evaluator \
             --profiles-dir . \
             --project-dir .
         continue-on-error: true

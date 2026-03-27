@@ -9,15 +9,15 @@
 
 WITH source AS (
     SELECT
-        VendorID              AS vendor_id,
-        lpep_pickup_datetime  AS pickup_datetime,
+        vendorid AS vendor_id,
+        lpep_pickup_datetime AS pickup_datetime,
         lpep_dropoff_datetime AS dropoff_datetime,
         passenger_count,
         trip_distance,
-        PULocationID          AS pu_location_id,
-        DOLocationID          AS do_location_id,
-        RatecodeID            AS rate_code_id,
-        payment_type          AS payment_type_id,
+        pulocationid AS pu_location_id,
+        dolocationid AS do_location_id,
+        ratecodeid AS rate_code_id,
+        payment_type AS payment_type_id,
         fare_amount,
         extra,
         mta_tax,
@@ -26,14 +26,15 @@ WITH source AS (
         improvement_surcharge,
         total_amount,
         congestion_surcharge,
-        Airport_fee           AS airport_fee,
+        airport_fee AS airport_fee,
         cbd_congestion_fee,
-        'green'               AS taxi_type,
+        'green' AS taxi_type,
         load_timestamp
     FROM {{ source('tlc_trips', 'green_taxi_trips') }}
     QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY vendor_id, pickup_datetime, dropoff_datetime,
-                     pu_location_id, do_location_id, fare_amount, trip_distance
+        PARTITION BY
+            vendor_id, pickup_datetime, dropoff_datetime,
+            pu_location_id, do_location_id, fare_amount, trip_distance
         ORDER BY load_timestamp DESC
     ) = 1
 )
@@ -68,8 +69,8 @@ SELECT
 FROM source
 
 {% if is_incremental() %}
-WHERE pickup_datetime >= (
-    SELECT DATEADD('day', -3, MAX(pickup_datetime))
-    FROM {{ this }}
-)
+    WHERE pickup_datetime >= (
+        SELECT DATEADD('day', -3, MAX(pickup_datetime))
+        FROM {{ this }}
+    )
 {% endif %}

@@ -127,13 +127,8 @@ jobs:
       - uses: ravsamhq/notify-slack-action@2.5.0
         with:
           status: failure
-          notification_title: ":x: CI Failed — {repo}"
-          message_format: >-
-            :warning: *{workflow}* failed on `{branch}` by *{author}*
-
-            Failed job(s): *{failed_jobs}*
-
-            <{run_url}|View workflow run>
+          notification_title: "{emoji} CI Failed — {repo}"
+          message_format: "{emoji} *{workflow}* failed on `{branch}` by *${{ github.actor }}* (<{commit_url}|`{commit_sha}`>)\n\n<{run_url}|View workflow run>"
           footer: "snow-airflow-dbt CI/CD Pipeline"
           notify_when: "failure"
         env:

@@ -28,6 +28,14 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
   - Installed `grafana-snowflake-datasource` plugin v1.15.0 via API (`POST /api/plugins/.../install`)
   - Created datasource `Snowflake - FinOps` (UID: `afhbjh3vp730gd`)
   - Deployed 6-panel FinOps dashboard: `https://stefentaime.grafana.net/d/snowflake-finops/snowflake-finops-credit-and-cost-monitoring`
+- **Grafana Alerts (spec 11.3)** — 5 alert rules deployed via provisioning API:
+  - `High Credit Burn Rate` (>20 credits/day) — severity: warning
+  - `Budget 50% Reached` (>$200 cumulative) — severity: warning
+  - `Budget 80% Reached` (>$320 cumulative) — severity: critical
+  - `Long Running Query` (>5 min / 300s) — severity: warning
+  - `Warehouse Auto-Suspend Check` (cloud services >10%) — severity: info
+  - Alert folder: `Snowflake FinOps Alerts`, rule group: `Snowflake FinOps`
+  - Exported to `grafana/alert-rules.json` for infrastructure-as-code
 
 ### 2026-03-27 — Streamlit Dashboards (spec Section 10)
 

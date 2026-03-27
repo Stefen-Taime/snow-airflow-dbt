@@ -1,0 +1,477 @@
+[
+    {
+        "id": 1,
+        "uid": "bfhbjryfqhfr4d",
+        "orgID": 1,
+        "folderUID": "snowflake-finops-alerts",
+        "ruleGroup": "Snowflake FinOps",
+        "title": "High Credit Burn Rate (>20 credits/day)",
+        "condition": "C",
+        "data": [
+            {
+                "refId": "A",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "afhbjh3vp730gd",
+                "model": {
+                    "format": "table",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) AS credits_used FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY WHERE USAGE_DATE = CURRENT_DATE() - 1",
+                    "refId": "A"
+                }
+            },
+            {
+                "refId": "B",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "expression": "A",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "reducer": "last",
+                    "refId": "B",
+                    "settings": {
+                        "mode": "dropNN"
+                    },
+                    "type": "reduce"
+                }
+            },
+            {
+                "refId": "C",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    20
+                                ],
+                                "type": "gt"
+                            },
+                            "operator": {
+                                "type": "and"
+                            },
+                            "reducer": {
+                                "type": "last"
+                            }
+                        }
+                    ],
+                    "expression": "B",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "refId": "C",
+                    "type": "threshold"
+                }
+            }
+        ],
+        "updated": "2026-03-27T22:09:15Z",
+        "noDataState": "OK",
+        "execErrState": "Error",
+        "for": "5m",
+        "keep_firing_for": "0s",
+        "annotations": {
+            "description": "Daily credit consumption is {{ $values.A }} credits, exceeding the 20 credit/day threshold.",
+            "summary": "Snowflake credit burn rate exceeds 20 credits/day (~$70/day)"
+        },
+        "labels": {
+            "severity": "warning",
+            "team": "data-engineering"
+        },
+        "isPaused": false,
+        "notification_settings": null,
+        "record": null
+    },
+    {
+        "id": 2,
+        "uid": "bfhbjrytgxc74d",
+        "orgID": 1,
+        "folderUID": "snowflake-finops-alerts",
+        "ruleGroup": "Snowflake FinOps",
+        "title": "Budget 50% Reached (>$200 cumulative)",
+        "condition": "C",
+        "data": [
+            {
+                "refId": "A",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "afhbjh3vp730gd",
+                "model": {
+                    "format": "table",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) * 3.50 AS cumulative_cost_usd FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY",
+                    "refId": "A"
+                }
+            },
+            {
+                "refId": "B",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "expression": "A",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "reducer": "last",
+                    "refId": "B",
+                    "settings": {
+                        "mode": "dropNN"
+                    },
+                    "type": "reduce"
+                }
+            },
+            {
+                "refId": "C",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    200
+                                ],
+                                "type": "gt"
+                            },
+                            "operator": {
+                                "type": "and"
+                            },
+                            "reducer": {
+                                "type": "last"
+                            }
+                        }
+                    ],
+                    "expression": "B",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "refId": "C",
+                    "type": "threshold"
+                }
+            }
+        ],
+        "updated": "2026-03-27T22:09:16Z",
+        "noDataState": "OK",
+        "execErrState": "Error",
+        "for": "5m",
+        "keep_firing_for": "0s",
+        "annotations": {
+            "description": "Cumulative cost is ${{ $values.A }}, exceeding the $200 threshold (50% of budget).",
+            "summary": "Snowflake cumulative spend has exceeded 50% of $400 budget"
+        },
+        "labels": {
+            "severity": "warning",
+            "team": "data-engineering"
+        },
+        "isPaused": false,
+        "notification_settings": null,
+        "record": null
+    },
+    {
+        "id": 3,
+        "uid": "bfhbjrz6fwcu8b",
+        "orgID": 1,
+        "folderUID": "snowflake-finops-alerts",
+        "ruleGroup": "Snowflake FinOps",
+        "title": "Budget 80% Reached (>$320 cumulative)",
+        "condition": "C",
+        "data": [
+            {
+                "refId": "A",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "afhbjh3vp730gd",
+                "model": {
+                    "format": "table",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) * 3.50 AS cumulative_cost_usd FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY",
+                    "refId": "A"
+                }
+            },
+            {
+                "refId": "B",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "expression": "A",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "reducer": "last",
+                    "refId": "B",
+                    "settings": {
+                        "mode": "dropNN"
+                    },
+                    "type": "reduce"
+                }
+            },
+            {
+                "refId": "C",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 2592000,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    320
+                                ],
+                                "type": "gt"
+                            },
+                            "operator": {
+                                "type": "and"
+                            },
+                            "reducer": {
+                                "type": "last"
+                            }
+                        }
+                    ],
+                    "expression": "B",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "refId": "C",
+                    "type": "threshold"
+                }
+            }
+        ],
+        "updated": "2026-03-27T22:09:16Z",
+        "noDataState": "OK",
+        "execErrState": "Error",
+        "for": "5m",
+        "keep_firing_for": "0s",
+        "annotations": {
+            "description": "Cumulative cost is ${{ $values.A }}, exceeding the $320 threshold (80% of budget). Immediate action required.",
+            "summary": "CRITICAL: Snowflake cumulative spend has exceeded 80% of $400 budget"
+        },
+        "labels": {
+            "severity": "critical",
+            "team": "data-engineering"
+        },
+        "isPaused": false,
+        "notification_settings": null,
+        "record": null
+    },
+    {
+        "id": 4,
+        "uid": "ffhbjrzj2dvr4a",
+        "orgID": 1,
+        "folderUID": "snowflake-finops-alerts",
+        "ruleGroup": "Snowflake FinOps",
+        "title": "Long Running Query (>5 min)",
+        "condition": "C",
+        "data": [
+            {
+                "refId": "A",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 3600,
+                    "to": 0
+                },
+                "datasourceUid": "afhbjh3vp730gd",
+                "model": {
+                    "format": "table",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, COUNT(*) AS long_queries FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY WHERE START_TIME >= DATEADD('hour', -1, CURRENT_TIMESTAMP()) AND TOTAL_ELAPSED_TIME > 300000 AND EXECUTION_STATUS = 'SUCCESS'",
+                    "refId": "A"
+                }
+            },
+            {
+                "refId": "B",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 3600,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "expression": "A",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "reducer": "last",
+                    "refId": "B",
+                    "settings": {
+                        "mode": "dropNN"
+                    },
+                    "type": "reduce"
+                }
+            },
+            {
+                "refId": "C",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 3600,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    0
+                                ],
+                                "type": "gt"
+                            },
+                            "operator": {
+                                "type": "and"
+                            },
+                            "reducer": {
+                                "type": "last"
+                            }
+                        }
+                    ],
+                    "expression": "B",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "refId": "C",
+                    "type": "threshold"
+                }
+            }
+        ],
+        "updated": "2026-03-27T22:09:16Z",
+        "noDataState": "OK",
+        "execErrState": "Error",
+        "for": "0s",
+        "keep_firing_for": "0s",
+        "annotations": {
+            "description": "{{ $values.A }} queries ran longer than 300 seconds in the last evaluation period.",
+            "summary": "Snowflake query exceeded 5 minutes execution time"
+        },
+        "labels": {
+            "severity": "warning",
+            "team": "data-engineering"
+        },
+        "isPaused": false,
+        "notification_settings": null,
+        "record": null
+    },
+    {
+        "id": 5,
+        "uid": "ffhbjrzvjvlz4e",
+        "orgID": 1,
+        "folderUID": "snowflake-finops-alerts",
+        "ruleGroup": "Snowflake FinOps",
+        "title": "Warehouse Auto-Suspend Check (idle >30 min)",
+        "condition": "C",
+        "data": [
+            {
+                "refId": "A",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "afhbjh3vp730gd",
+                "model": {
+                    "format": "table",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, MAX(ROUND(SUM(CREDITS_USED_CLOUD_SERVICES) / NULLIF(SUM(CREDITS_USED_COMPUTE), 0) * 100, 2)) AS max_cloud_pct FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY WHERE START_TIME >= DATEADD('day', -1, CURRENT_TIMESTAMP()) GROUP BY WAREHOUSE_NAME",
+                    "refId": "A"
+                }
+            },
+            {
+                "refId": "B",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "expression": "A",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "reducer": "max",
+                    "refId": "B",
+                    "settings": {
+                        "mode": "dropNN"
+                    },
+                    "type": "reduce"
+                }
+            },
+            {
+                "refId": "C",
+                "queryType": "",
+                "relativeTimeRange": {
+                    "from": 86400,
+                    "to": 0
+                },
+                "datasourceUid": "__expr__",
+                "model": {
+                    "conditions": [
+                        {
+                            "evaluator": {
+                                "params": [
+                                    10
+                                ],
+                                "type": "gt"
+                            },
+                            "operator": {
+                                "type": "and"
+                            },
+                            "reducer": {
+                                "type": "last"
+                            }
+                        }
+                    ],
+                    "expression": "B",
+                    "intervalMs": 1000,
+                    "maxDataPoints": 43200,
+                    "refId": "C",
+                    "type": "threshold"
+                }
+            }
+        ],
+        "updated": "2026-03-27T22:09:16Z",
+        "noDataState": "OK",
+        "execErrState": "Error",
+        "for": "5m",
+        "keep_firing_for": "0s",
+        "annotations": {
+            "description": "Cloud services percentage is {{ $values.A }}% for a warehouse, suggesting potential idle time. Check auto-suspend settings.",
+            "summary": "Warehouse auto-suspend may not be configured optimally"
+        },
+        "labels": {
+            "severity": "info",
+            "team": "data-engineering"
+        },
+        "isPaused": false,
+        "notification_settings": null,
+        "record": null
+    }
+]

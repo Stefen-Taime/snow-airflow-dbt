@@ -4,7 +4,12 @@
     "uid": "snowflake-finops",
     "title": "Snowflake FinOps - Credit & Cost Monitoring",
     "description": "Snowflake credit consumption, cost tracking, and warehouse performance monitoring for the TLC pipeline.",
-    "tags": ["snowflake", "finops", "cost", "tlc"],
+    "tags": [
+      "snowflake",
+      "finops",
+      "cost",
+      "tlc"
+    ],
     "timezone": "browser",
     "schemaVersion": 39,
     "version": 1,
@@ -24,7 +29,10 @@
       "list": [
         {
           "builtIn": 1,
-          "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
           "enable": true,
           "hide": true,
           "iconColor": "rgba(0, 211, 255, 1)",
@@ -39,8 +47,16 @@
         "title": "Credit Burn Rate (Daily)",
         "description": "Daily credit consumption and estimated USD cost over the last 30 days.",
         "type": "timeseries",
-        "gridPos": { "h": 9, "w": 12, "x": 0, "y": 0 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    USAGE_DATE AS time,\n    SUM(CREDITS_USED) AS credits_used,\n    SUM(CREDITS_USED) * 3.50 AS estimated_cost_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY\nWHERE USAGE_DATE >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY USAGE_DATE\nORDER BY USAGE_DATE",
@@ -50,7 +66,9 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "palette-classic" },
+            "color": {
+              "mode": "palette-classic"
+            },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -61,50 +79,110 @@
               "drawStyle": "bars",
               "fillOpacity": 70,
               "gradientMode": "hue",
-              "hideFrom": { "legend": false, "tooltip": false, "viz": false },
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
               "insertNulls": false,
               "lineInterpolation": "smooth",
               "lineWidth": 2,
               "pointSize": 5,
-              "scaleDistribution": { "type": "linear" },
+              "scaleDistribution": {
+                "type": "linear"
+              },
               "showPoints": "auto",
               "spanNulls": false,
-              "stacking": { "group": "A", "mode": "none" },
-              "thresholdsStyle": { "mode": "off" }
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null },
-                { "color": "yellow", "value": 10 },
-                { "color": "red", "value": 20 }
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 10
+                },
+                {
+                  "color": "red",
+                  "value": 20
+                }
               ]
             },
             "unit": "none"
           },
           "overrides": [
             {
-              "matcher": { "id": "byName", "options": "estimated_cost_usd" },
+              "matcher": {
+                "id": "byName",
+                "options": "ESTIMATED_COST_USD"
+              },
               "properties": [
-                { "id": "custom.drawStyle", "value": "line" },
-                { "id": "custom.fillOpacity", "value": 10 },
-                { "id": "custom.axisPlacement", "value": "right" },
-                { "id": "unit", "value": "currencyUSD" },
-                { "id": "color", "value": { "fixedColor": "#FF6B35", "mode": "fixed" } }
+                {
+                  "id": "custom.drawStyle",
+                  "value": "line"
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 10
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#FF6B35",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "credits_used" },
+              "matcher": {
+                "id": "byName",
+                "options": "CREDITS_USED"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#118AB2", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#118AB2",
+                    "mode": "fixed"
+                  }
+                }
               ]
             }
           ]
         },
         "options": {
-          "legend": { "calcs": ["sum", "mean"], "displayMode": "table", "placement": "bottom" },
-          "tooltip": { "mode": "multi", "sort": "desc" }
+          "legend": {
+            "calcs": [
+              "sum",
+              "mean"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
         }
       },
       {
@@ -112,8 +190,16 @@
         "title": "Cumulative Credit Consumption vs Budget",
         "description": "Running total of credits consumed vs budget threshold (100 credits / $350).",
         "type": "timeseries",
-        "gridPos": { "h": 9, "w": 12, "x": 12, "y": 0 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    USAGE_DATE AS time,\n    SUM(CREDITS_USED) OVER (ORDER BY USAGE_DATE) AS cumulative_credits,\n    SUM(CREDITS_USED) OVER (ORDER BY USAGE_DATE) * 3.50 AS cumulative_cost_usd,\n    100.0 AS budget_credits,\n    350.0 AS budget_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY\nORDER BY USAGE_DATE",
@@ -123,7 +209,9 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "palette-classic" },
+            "color": {
+              "mode": "palette-classic"
+            },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -138,58 +226,157 @@
               "pointSize": 5,
               "showPoints": "never",
               "spanNulls": true,
-              "stacking": { "group": "A", "mode": "none" }
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null },
-                { "color": "yellow", "value": 50 },
-                { "color": "red", "value": 80 }
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 50
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
               ]
             }
           },
           "overrides": [
             {
-              "matcher": { "id": "byName", "options": "cumulative_cost_usd" },
+              "matcher": {
+                "id": "byName",
+                "options": "CUMULATIVE_COST_USD"
+              },
               "properties": [
-                { "id": "unit", "value": "currencyUSD" },
-                { "id": "color", "value": { "fixedColor": "#FF6B35", "mode": "fixed" } },
-                { "id": "custom.lineWidth", "value": 3 }
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#FF6B35",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.lineWidth",
+                  "value": 3
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "cumulative_credits" },
+              "matcher": {
+                "id": "byName",
+                "options": "CUMULATIVE_CREDITS"
+              },
               "properties": [
-                { "id": "custom.axisPlacement", "value": "right" },
-                { "id": "color", "value": { "fixedColor": "#00D4AA", "mode": "fixed" } }
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#00D4AA",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "budget_credits" },
+              "matcher": {
+                "id": "byName",
+                "options": "BUDGET_CREDITS"
+              },
               "properties": [
-                { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
-                { "id": "custom.fillOpacity", "value": 0 },
-                { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } },
-                { "id": "custom.axisPlacement", "value": "hidden" }
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "hidden"
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "budget_usd" },
+              "matcher": {
+                "id": "byName",
+                "options": "BUDGET_USD"
+              },
               "properties": [
-                { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } },
-                { "id": "custom.fillOpacity", "value": 0 },
-                { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } },
-                { "id": "custom.axisPlacement", "value": "hidden" },
-                { "id": "unit", "value": "currencyUSD" }
+                {
+                  "id": "custom.lineStyle",
+                  "value": {
+                    "dash": [
+                      10,
+                      10
+                    ],
+                    "fill": "dash"
+                  }
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "hidden"
+                },
+                {
+                  "id": "unit",
+                  "value": "currencyUSD"
+                }
               ]
             }
           ]
         },
         "options": {
-          "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom" },
-          "tooltip": { "mode": "multi", "sort": "desc" }
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
         }
       },
       {
@@ -197,8 +384,16 @@
         "title": "Credits by Warehouse (Last 30d)",
         "description": "Credit consumption breakdown by warehouse.",
         "type": "piechart",
-        "gridPos": { "h": 9, "w": 8, "x": 0, "y": 9 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 8,
+          "x": 0,
+          "y": 9
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    WAREHOUSE_NAME,\n    SUM(CREDITS_USED) AS total_credits,\n    SUM(CREDITS_USED) * 3.50 AS estimated_cost_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY\nWHERE START_TIME >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY WAREHOUSE_NAME\nORDER BY total_credits DESC",
@@ -208,17 +403,41 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "palette-classic" },
-            "custom": { "hideFrom": { "legend": false, "tooltip": false, "viz": false } },
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
             "mappings": []
           },
           "overrides": []
         },
         "options": {
-          "legend": { "displayMode": "table", "placement": "right", "values": ["value", "percent"] },
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": [
+              "value",
+              "percent"
+            ]
+          },
           "pieType": "donut",
-          "reduceOptions": { "calcs": ["lastNotNull"], "fields": "/^total_credits$/", "values": false },
-          "tooltip": { "mode": "single", "sort": "none" }
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "/^TOTAL_CREDITS$/",
+            "values": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
         }
       },
       {
@@ -226,8 +445,16 @@
         "title": "Top 10 Most Expensive Queries (Last 7d)",
         "description": "Longest-running queries by execution time.",
         "type": "table",
-        "gridPos": { "h": 9, "w": 16, "x": 8, "y": 9 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 16,
+          "x": 8,
+          "y": 9
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    QUERY_ID,\n    LEFT(QUERY_TEXT, 120) AS query_preview,\n    WAREHOUSE_NAME,\n    EXECUTION_STATUS,\n    ROUND(TOTAL_ELAPSED_TIME / 1000, 1) AS duration_seconds,\n    ROUND(BYTES_SCANNED / (1024*1024*1024), 2) AS gb_scanned,\n    ROUND(CREDITS_USED_CLOUD_SERVICES, 4) AS cloud_credits\nFROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY\nWHERE START_TIME >= DATEADD('day', -7, CURRENT_DATE())\nORDER BY TOTAL_ELAPSED_TIME DESC\nLIMIT 10",
@@ -237,40 +464,77 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "thresholds" },
+            "color": {
+              "mode": "thresholds"
+            },
             "custom": {
               "align": "auto",
-              "cellOptions": { "type": "auto" },
+              "cellOptions": {
+                "type": "auto"
+              },
               "inspect": false
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null },
-                { "color": "yellow", "value": 60 },
-                { "color": "red", "value": 300 }
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 60
+                },
+                {
+                  "color": "red",
+                  "value": 300
+                }
               ]
             }
           },
           "overrides": [
             {
-              "matcher": { "id": "byName", "options": "duration_seconds" },
+              "matcher": {
+                "id": "byName",
+                "options": "DURATION_SECONDS"
+              },
               "properties": [
-                { "id": "unit", "value": "s" },
-                { "id": "custom.cellOptions", "value": { "mode": "gradient", "type": "gauge" } }
+                {
+                  "id": "unit",
+                  "value": "s"
+                },
+                {
+                  "id": "custom.cellOptions",
+                  "value": {
+                    "mode": "gradient",
+                    "type": "gauge"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "gb_scanned" },
+              "matcher": {
+                "id": "byName",
+                "options": "GB_SCANNED"
+              },
               "properties": [
-                { "id": "unit", "value": "decgbytes" }
+                {
+                  "id": "unit",
+                  "value": "decgbytes"
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "query_preview" },
+              "matcher": {
+                "id": "byName",
+                "options": "QUERY_PREVIEW"
+              },
               "properties": [
-                { "id": "custom.width", "value": 400 }
+                {
+                  "id": "custom.width",
+                  "value": 400
+                }
               ]
             }
           ]
@@ -278,8 +542,20 @@
         "options": {
           "showHeader": true,
           "cellHeight": "sm",
-          "footer": { "countRows": false, "fields": "", "reducer": ["sum"], "show": false },
-          "sortBy": [{ "desc": true, "displayName": "duration_seconds" }]
+          "footer": {
+            "countRows": false,
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "DURATION_SECONDS"
+            }
+          ]
         }
       },
       {
@@ -287,8 +563,16 @@
         "title": "Storage Usage Trend (Last 30d)",
         "description": "Database, stage, and failsafe storage consumption over time.",
         "type": "timeseries",
-        "gridPos": { "h": 9, "w": 12, "x": 0, "y": 18 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 0,
+          "y": 18
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    USAGE_DATE AS time,\n    ROUND(STAGE_BYTES / (1024*1024*1024), 2) AS stage_gb,\n    ROUND(STORAGE_BYTES / (1024*1024*1024), 2) AS database_gb,\n    ROUND(FAILSAFE_BYTES / (1024*1024*1024), 2) AS failsafe_gb\nFROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE\nWHERE USAGE_DATE >= DATEADD('day', -30, CURRENT_DATE())\nORDER BY USAGE_DATE",
@@ -298,7 +582,9 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "palette-classic" },
+            "color": {
+              "mode": "palette-classic"
+            },
             "custom": {
               "drawStyle": "line",
               "fillOpacity": 25,
@@ -307,41 +593,84 @@
               "lineWidth": 2,
               "pointSize": 5,
               "showPoints": "never",
-              "stacking": { "group": "A", "mode": "normal" }
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              }
             },
             "unit": "decgbytes",
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null }
+                {
+                  "color": "green",
+                  "value": null
+                }
               ]
             }
           },
           "overrides": [
             {
-              "matcher": { "id": "byName", "options": "database_gb" },
+              "matcher": {
+                "id": "byName",
+                "options": "DATABASE_GB"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#118AB2", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#118AB2",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "stage_gb" },
+              "matcher": {
+                "id": "byName",
+                "options": "STAGE_GB"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#FFD166", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#FFD166",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "failsafe_gb" },
+              "matcher": {
+                "id": "byName",
+                "options": "FAILSAFE_GB"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#EF476F", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#EF476F",
+                    "mode": "fixed"
+                  }
+                }
               ]
             }
           ]
         },
         "options": {
-          "legend": { "calcs": ["lastNotNull", "mean"], "displayMode": "table", "placement": "bottom" },
-          "tooltip": { "mode": "multi", "sort": "desc" }
+          "legend": {
+            "calcs": [
+              "lastNotNull",
+              "mean"
+            ],
+            "displayMode": "table",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          }
         }
       },
       {
@@ -349,8 +678,16 @@
         "title": "Warehouse Credit Breakdown",
         "description": "Compute vs cloud services credits per warehouse. Cloud services > 10% signals idle overhead.",
         "type": "barchart",
-        "gridPos": { "h": 9, "w": 12, "x": 12, "y": 18 },
-        "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 18
+        },
+        "datasource": {
+          "type": "grafana-snowflake-datasource",
+          "uid": "${DS_SNOWFLAKE}"
+        },
         "targets": [
           {
             "rawSql": "SELECT\n    WAREHOUSE_NAME,\n    ROUND(SUM(CREDITS_USED_COMPUTE), 2) AS compute_credits,\n    ROUND(SUM(CREDITS_USED_CLOUD_SERVICES), 2) AS cloud_credits,\n    ROUND(SUM(CREDITS_USED_CLOUD_SERVICES) / NULLIF(SUM(CREDITS_USED_COMPUTE), 0) * 100, 2) AS cloud_services_pct\nFROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY\nWHERE START_TIME >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY WAREHOUSE_NAME",
@@ -360,7 +697,9 @@
         ],
         "fieldConfig": {
           "defaults": {
-            "color": { "mode": "palette-classic" },
+            "color": {
+              "mode": "palette-classic"
+            },
             "custom": {
               "axisBorderShow": false,
               "axisCenteredZero": false,
@@ -368,39 +707,92 @@
               "fillOpacity": 80,
               "gradientMode": "hue",
               "lineWidth": 1,
-              "scaleDistribution": { "type": "linear" },
-              "stacking": { "group": "A", "mode": "normal" }
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              }
             },
             "mappings": [],
             "thresholds": {
               "mode": "absolute",
               "steps": [
-                { "color": "green", "value": null }
+                {
+                  "color": "green",
+                  "value": null
+                }
               ]
             }
           },
           "overrides": [
             {
-              "matcher": { "id": "byName", "options": "compute_credits" },
+              "matcher": {
+                "id": "byName",
+                "options": "COMPUTE_CREDITS"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#118AB2", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#118AB2",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "cloud_credits" },
+              "matcher": {
+                "id": "byName",
+                "options": "CLOUD_CREDITS"
+              },
               "properties": [
-                { "id": "color", "value": { "fixedColor": "#FF6B35", "mode": "fixed" } }
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "#FF6B35",
+                    "mode": "fixed"
+                  }
+                }
               ]
             },
             {
-              "matcher": { "id": "byName", "options": "cloud_services_pct" },
+              "matcher": {
+                "id": "byName",
+                "options": "CLOUD_SERVICES_PCT"
+              },
               "properties": [
-                { "id": "custom.stacking", "value": { "group": "B", "mode": "none" } },
-                { "id": "custom.drawStyle", "value": "line" },
-                { "id": "custom.fillOpacity", "value": 0 },
-                { "id": "custom.axisPlacement", "value": "right" },
-                { "id": "unit", "value": "percent" },
-                { "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }
+                {
+                  "id": "custom.stacking",
+                  "value": {
+                    "group": "B",
+                    "mode": "none"
+                  }
+                },
+                {
+                  "id": "custom.drawStyle",
+                  "value": "line"
+                },
+                {
+                  "id": "custom.fillOpacity",
+                  "value": 0
+                },
+                {
+                  "id": "custom.axisPlacement",
+                  "value": "right"
+                },
+                {
+                  "id": "unit",
+                  "value": "percent"
+                },
+                {
+                  "id": "color",
+                  "value": {
+                    "fixedColor": "red",
+                    "mode": "fixed"
+                  }
+                }
               ]
             }
           ]
@@ -409,11 +801,18 @@
           "barWidth": 0.7,
           "fullHighlight": false,
           "groupWidth": 0.7,
-          "legend": { "calcs": [], "displayMode": "list", "placement": "bottom" },
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
           "orientation": "auto",
           "showValue": "auto",
           "stacking": "normal",
-          "tooltip": { "mode": "multi", "sort": "desc" },
+          "tooltip": {
+            "mode": "multi",
+            "sort": "desc"
+          },
           "xTickLabelRotation": 0
         }
       }

@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: astronomer/deploy-action@v0.9
+      - uses: astronomer/deploy-action@v0.12.0
         with:
           deployment-id: cmn9i1ttw1oxa01lba0kjr6gt
           root-folder: astro-project

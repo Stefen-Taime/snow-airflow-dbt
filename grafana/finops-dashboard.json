@@ -44,7 +44,7 @@
         "targets": [
           {
             "rawSql": "SELECT\n    USAGE_DATE AS time,\n    SUM(CREDITS_USED) AS credits_used,\n    SUM(CREDITS_USED) * 3.50 AS estimated_cost_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY\nWHERE USAGE_DATE >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY USAGE_DATE\nORDER BY USAGE_DATE",
-            "format": "time_series",
+            "format": 1,
             "refId": "A"
           }
         ],
@@ -117,7 +117,7 @@
         "targets": [
           {
             "rawSql": "SELECT\n    USAGE_DATE AS time,\n    SUM(CREDITS_USED) OVER (ORDER BY USAGE_DATE) AS cumulative_credits,\n    SUM(CREDITS_USED) OVER (ORDER BY USAGE_DATE) * 3.50 AS cumulative_cost_usd,\n    100.0 AS budget_credits,\n    350.0 AS budget_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY\nORDER BY USAGE_DATE",
-            "format": "time_series",
+            "format": 1,
             "refId": "A"
           }
         ],
@@ -202,7 +202,7 @@
         "targets": [
           {
             "rawSql": "SELECT\n    WAREHOUSE_NAME,\n    SUM(CREDITS_USED) AS total_credits,\n    SUM(CREDITS_USED) * 3.50 AS estimated_cost_usd\nFROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY\nWHERE START_TIME >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY WAREHOUSE_NAME\nORDER BY total_credits DESC",
-            "format": "table",
+            "format": 0,
             "refId": "A"
           }
         ],
@@ -231,7 +231,7 @@
         "targets": [
           {
             "rawSql": "SELECT\n    QUERY_ID,\n    LEFT(QUERY_TEXT, 120) AS query_preview,\n    WAREHOUSE_NAME,\n    EXECUTION_STATUS,\n    ROUND(TOTAL_ELAPSED_TIME / 1000, 1) AS duration_seconds,\n    ROUND(BYTES_SCANNED / (1024*1024*1024), 2) AS gb_scanned,\n    ROUND(CREDITS_USED_CLOUD_SERVICES, 4) AS cloud_credits\nFROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY\nWHERE START_TIME >= DATEADD('day', -7, CURRENT_DATE())\nORDER BY TOTAL_ELAPSED_TIME DESC\nLIMIT 10",
-            "format": "table",
+            "format": 0,
             "refId": "A"
           }
         ],
@@ -291,8 +291,8 @@
         "datasource": { "type": "grafana-snowflake-datasource", "uid": "${DS_SNOWFLAKE}" },
         "targets": [
           {
-            "rawSql": "SELECT\n    USAGE_DATE AS time,\n    ROUND(AVERAGE_STAGE_BYTES / (1024*1024*1024), 2) AS stage_gb,\n    ROUND(AVERAGE_DATABASE_BYTES / (1024*1024*1024), 2) AS database_gb,\n    ROUND(AVERAGE_FAILSAFE_BYTES / (1024*1024*1024), 2) AS failsafe_gb\nFROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE\nWHERE USAGE_DATE >= DATEADD('day', -30, CURRENT_DATE())\nORDER BY USAGE_DATE",
-            "format": "time_series",
+            "rawSql": "SELECT\n    USAGE_DATE AS time,\n    ROUND(STAGE_BYTES / (1024*1024*1024), 2) AS stage_gb,\n    ROUND(STORAGE_BYTES / (1024*1024*1024), 2) AS database_gb,\n    ROUND(FAILSAFE_BYTES / (1024*1024*1024), 2) AS failsafe_gb\nFROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE\nWHERE USAGE_DATE >= DATEADD('day', -30, CURRENT_DATE())\nORDER BY USAGE_DATE",
+            "format": 1,
             "refId": "A"
           }
         ],
@@ -354,7 +354,7 @@
         "targets": [
           {
             "rawSql": "SELECT\n    WAREHOUSE_NAME,\n    ROUND(SUM(CREDITS_USED_COMPUTE), 2) AS compute_credits,\n    ROUND(SUM(CREDITS_USED_CLOUD_SERVICES), 2) AS cloud_credits,\n    ROUND(SUM(CREDITS_USED_CLOUD_SERVICES) / NULLIF(SUM(CREDITS_USED_COMPUTE), 0) * 100, 2) AS cloud_services_pct\nFROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY\nWHERE START_TIME >= DATEADD('day', -30, CURRENT_DATE())\nGROUP BY WAREHOUSE_NAME",
-            "format": "table",
+            "format": 0,
             "refId": "A"
           }
         ],

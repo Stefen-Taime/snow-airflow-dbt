@@ -17,7 +17,7 @@
                 },
                 "datasourceUid": "afhbjh3vp730gd",
                 "model": {
-                    "format": "table",
+                    "format": 0,
                     "intervalMs": 1000,
                     "maxDataPoints": 43200,
                     "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) AS credits_used FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY WHERE USAGE_DATE = CURRENT_DATE() - 1",
@@ -77,7 +77,7 @@
                 }
             }
         ],
-        "updated": "2026-03-27T22:45:40Z",
+        "updated": "2026-03-27T22:47:39Z",
         "noDataState": "OK",
         "execErrState": "OK",
         "for": "5m",
@@ -112,7 +112,7 @@
                 },
                 "datasourceUid": "afhbjh3vp730gd",
                 "model": {
-                    "format": "table",
+                    "format": 0,
                     "intervalMs": 1000,
                     "maxDataPoints": 43200,
                     "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) * 3.50 AS cumulative_cost_usd FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY",
@@ -172,7 +172,7 @@
                 }
             }
         ],
-        "updated": "2026-03-27T22:45:40Z",
+        "updated": "2026-03-27T22:47:40Z",
         "noDataState": "OK",
         "execErrState": "OK",
         "for": "5m",
@@ -207,7 +207,7 @@
                 },
                 "datasourceUid": "afhbjh3vp730gd",
                 "model": {
-                    "format": "table",
+                    "format": 0,
                     "intervalMs": 1000,
                     "maxDataPoints": 43200,
                     "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, SUM(CREDITS_USED) * 3.50 AS cumulative_cost_usd FROM SNOWFLAKE.ACCOUNT_USAGE.METERING_DAILY_HISTORY",
@@ -267,7 +267,7 @@
                 }
             }
         ],
-        "updated": "2026-03-27T22:45:40Z",
+        "updated": "2026-03-27T22:47:40Z",
         "noDataState": "OK",
         "execErrState": "OK",
         "for": "5m",
@@ -302,7 +302,7 @@
                 },
                 "datasourceUid": "afhbjh3vp730gd",
                 "model": {
-                    "format": "table",
+                    "format": 0,
                     "intervalMs": 1000,
                     "maxDataPoints": 43200,
                     "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, COUNT(*) AS long_queries FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY WHERE START_TIME >= DATEADD('hour', -1, CURRENT_TIMESTAMP()) AND TOTAL_ELAPSED_TIME > 300000 AND EXECUTION_STATUS = 'SUCCESS'",
@@ -362,7 +362,7 @@
                 }
             }
         ],
-        "updated": "2026-03-27T22:45:41Z",
+        "updated": "2026-03-27T22:47:40Z",
         "noDataState": "OK",
         "execErrState": "OK",
         "for": "0s",
@@ -397,7 +397,7 @@
                 },
                 "datasourceUid": "afhbjh3vp730gd",
                 "model": {
-                    "format": "table",
+                    "format": 0,
                     "intervalMs": 1000,
                     "maxDataPoints": 43200,
                     "rawSql": "SELECT CURRENT_TIMESTAMP() AS time, MAX(ROUND(SUM(CREDITS_USED_CLOUD_SERVICES) / NULLIF(SUM(CREDITS_USED_COMPUTE), 0) * 100, 2)) AS max_cloud_pct FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY WHERE START_TIME >= DATEADD('day', -1, CURRENT_TIMESTAMP()) GROUP BY WAREHOUSE_NAME",
@@ -457,7 +457,7 @@
                 }
             }
         ],
-        "updated": "2026-03-27T22:45:41Z",
+        "updated": "2026-03-27T22:47:40Z",
         "noDataState": "OK",
         "execErrState": "OK",
         "for": "5m",

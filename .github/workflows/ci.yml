@@ -35,12 +35,11 @@ jobs:
           cache: pip
 
       - name: Install SQLFluff
-        run: pip install sqlfluff sqlfluff-templater-dbt
+        run: pip install sqlfluff
 
       - name: SQLFluff Lint
-        run: |
-          sqlfluff lint ${{ env.DBT_PROJECT_DIR }}/models/ \
-            --config ${{ env.DBT_PROJECT_DIR }}/.sqlfluff
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: sqlfluff lint models/ --config .sqlfluff
 
   build-and-test:
     name: dbt Build & Test

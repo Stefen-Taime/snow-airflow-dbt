@@ -18,14 +18,15 @@ jobs:
   deploy:
     name: Deploy to Astronomer Cloud
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: astro-project
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Astro CLI
+        working-directory: .
         run: curl -sSL install.astronomer.io | sudo bash -s
-
-      - name: Authenticate to Astronomer
-        run: astro context switch astronomer.astronomer.run
 
       - name: Deploy to Astronomer
         run: astro deploy cmn9i1ttw1oxa01lba0kjr6gt --force

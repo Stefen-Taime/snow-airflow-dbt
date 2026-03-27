@@ -1,6 +1,7 @@
 """
 DAG 1: tlc_raw_ingestion
 ========================
+Orchestrated by Astronomer Cloud (CI/CD via GitHub Actions).
 Downloads NYC TLC trip data (Parquet + CSV) from the TLC CDN,
 stages files into Snowflake internal stages, and loads them
 into RAW tables via COPY INTO.

@@ -3,12 +3,139 @@ version: 2
 models:
   - name: met_hourly_demand
     description: "Daily demand by hour and day of week — trip count, duration, speed"
+    columns:
+      - name: trip_date
+        tests:
+          - not_null
+      - name: pickup_hour
+        description: "Hour of day (0-23)"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 23
+      - name: day_of_week
+        description: "Day of week (0=Mon to 6=Sun)"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 6
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: trip_count
+        tests:
+          - test_positive_value
+      - name: avg_duration_min
+        description: "Average trip duration in minutes"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1440
+                row_condition: "avg_duration_min is not null"
+              config:
+                severity: warn
+      - name: avg_speed_mph
+        description: "Average speed in mph"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+                row_condition: "avg_speed_mph is not null"
+              config:
+                severity: warn
 
   - name: met_trip_duration_dist
     description: "Monthly trip duration distribution — bucketed (0-5min, 5-10min, etc.)"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_avg_speed_trend
     description: "Daily average speed trend — distance, duration, mph by taxi type"
+    columns:
+      - name: trip_date
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: total_trips
+        tests:
+          - test_positive_value
+      - name: avg_speed_mph
+        description: "Average speed in mph"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+                row_condition: "avg_speed_mph is not null"
+              config:
+                severity: warn
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_date
+              - taxi_type
 
   - name: met_vendor_performance
     description: "Monthly vendor performance — trips, revenue, distance, tips, duration"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: vendor_id
+        tests:
+          - not_null
+      - name: vendor_name
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: trip_count
+        tests:
+          - test_positive_value
+      - name: total_revenue
+        tests:
+          - not_null
+      - name: avg_duration_min
+        description: "Average trip duration in minutes"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 1440
+                row_condition: "avg_duration_min is not null"
+              config:
+                severity: warn
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_month
+              - vendor_id
+              - taxi_type

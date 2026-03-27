@@ -3,3 +3,56 @@ version: 2
 models:
   - name: met_executive_summary
     description: "Monthly executive summary — trips, revenue, avg fare, CBD fees by taxi type"
+    columns:
+      - name: trip_month
+        description: "Month (truncated)"
+        tests:
+          - not_null
+      - name: taxi_type
+        description: "yellow or green"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: total_trips
+        description: "Total trip count for the month"
+        tests:
+          - not_null
+          - test_positive_value
+      - name: total_revenue
+        description: "Sum of total_amount"
+        tests:
+          - not_null
+      - name: avg_fare
+        description: "Average fare_amount"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 500
+                row_condition: "avg_fare is not null"
+              config:
+                severity: warn
+      - name: avg_trip_distance
+        description: "Average trip distance in miles"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+                row_condition: "avg_trip_distance is not null"
+              config:
+                severity: warn
+      - name: avg_passenger_count
+        description: "Average passenger count"
+      - name: total_cbd_fees
+        description: "Total CBD congestion fees"
+      - name: cbd_trips
+        description: "Number of trips with CBD fee"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_month
+              - taxi_type

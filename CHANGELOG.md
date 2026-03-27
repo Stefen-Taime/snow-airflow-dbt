@@ -4,6 +4,37 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
 
 ## [Unreleased]
 
+### 2026-03-27 — README, dbt Mart Tests & Grafana Slack Notifications
+
+- **README.md** — Created project README with:
+  - Mermaid architecture diagram (pipeline flow + ER diagram)
+  - Full project structure tree
+  - Tech stack table (Snowflake, Airflow 3, dbt 1.11, Streamlit, Grafana, Slack)
+  - Step-by-step setup instructions for all components
+  - dbt lineage diagram and data quality summary
+  - CI/CD pipeline documentation
+  - Alerting configuration (Airflow callbacks + Grafana rules)
+
+- **dbt Mart Tests** — Added comprehensive column-level tests across all 5 mart domains:
+  - **Revenue** (4 models): not_null, accepted_values, test_positive_value, unique_combination_of_columns
+  - **Geographic** (4 models): not_null, accepted_values, test_positive_value, dbt_expectations range checks, unique_combination_of_columns
+  - **Congestion** (4 models): not_null, accepted_values, test_positive_value, dbt_expectations (cbd_trip_pct 0-100, avg_speed_mph 0-100)
+  - **Operations** (4 models): not_null, accepted_values, test_positive_value, dbt_expectations (pickup_hour 0-23, day_of_week 0-6, avg_duration_min, avg_speed_mph)
+  - **Executive** (1 model): not_null, accepted_values, test_positive_value, dbt_expectations (avg_fare, avg_trip_distance)
+  - New singular test: `assert_revenue_matches_executive_summary.sql` (cross-mart revenue consistency within 1%)
+  - All `dbt_utils.unique_combination_of_columns` tests wrapped with `arguments:` property (dbt 1.11 compliance)
+  - Validated: `dbt parse` — 0 errors, 0 deprecation warnings
+
+- **Grafana Slack Notifications** — Configured Slack as alert contact point:
+  - Created contact point `Slack - FinOps Alerts` (UID: `efhbmgr4l2vb4f`) via provisioning API
+  - Channel: `#macie-finds` with `@here` mentions
+  - Notification policy with severity-based routing:
+    - `critical`: 10s group_wait, 1h repeat (Budget 80%)
+    - `warning`: 30s group_wait, 4h repeat (Credit burn, Budget 50%, Long queries)
+    - `info`: 1m group_wait, 12h repeat (Warehouse auto-suspend)
+  - Exported: `grafana/slack-contact-point.json`, `grafana/notification-policy.json`
+  - Test notification sent and delivered successfully to Slack
+
 ### 2026-03-27 — Grafana FinOps Dashboard (spec Section 11)
 
 - Created `grafana/` directory with infrastructure-as-code provisioning files

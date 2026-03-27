@@ -3,12 +3,119 @@ version: 2
 models:
   - name: met_daily_revenue
     description: "Daily revenue breakdown — fares, tips, tolls, surcharges, CBD fees by taxi type"
+    columns:
+      - name: trip_date
+        description: "Trip date (day truncated)"
+        tests:
+          - not_null
+      - name: taxi_type
+        description: "yellow or green"
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: total_trips
+        description: "Number of trips"
+        tests:
+          - not_null
+          - test_positive_value
+      - name: total_revenue
+        description: "Sum of total_amount"
+        tests:
+          - not_null
+      - name: avg_revenue_per_trip
+        description: "Average total_amount per trip"
+      - name: revenue_per_mile
+        description: "Revenue per mile driven"
+      - name: total_fares
+        description: "Sum of fare_amount"
+      - name: total_tips
+        description: "Sum of tip_amount"
+      - name: avg_tip_pct
+        description: "Average tip as percentage of fare"
+      - name: total_tolls
+        description: "Sum of tolls_amount"
+      - name: total_congestion_surcharges
+        description: "Sum of congestion_surcharge"
+      - name: total_airport_fees
+        description: "Sum of airport_fee"
+      - name: total_cbd_fees
+        description: "Sum of cbd_congestion_fee"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_date
+              - taxi_type
 
   - name: met_revenue_by_zone
     description: "Monthly revenue by pickup zone and borough"
+    columns:
+      - name: trip_month
+        description: "Trip month (month truncated)"
+        tests:
+          - not_null
+      - name: taxi_type
+        description: "yellow or green"
+        tests:
+          - not_null
+      - name: pickup_borough
+        description: "Pickup borough name"
+      - name: pickup_zone
+        description: "Pickup zone name"
+      - name: pu_location_id
+        description: "Pickup location zone ID"
+        tests:
+          - not_null
+      - name: trip_count
+        description: "Number of trips"
+        tests:
+          - test_positive_value
+      - name: total_revenue
+        description: "Sum of total_amount"
+      - name: avg_revenue_per_trip
+        description: "Average revenue per trip"
+      - name: total_tips
+        description: "Sum of tips"
+      - name: avg_tip_pct
+        description: "Average tip percentage"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_month
+              - taxi_type
+              - pu_location_id
 
   - name: met_revenue_by_rate_code
     description: "Monthly revenue by rate code (Standard, JFK, Newark, etc.)"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: rate_code_id
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_payment_distribution
     description: "Monthly payment method distribution — trip count, revenue, tip % by payment type"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: payment_type_id
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value

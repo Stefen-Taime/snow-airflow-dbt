@@ -3,12 +3,92 @@ version: 2
 models:
   - name: met_cbd_daily_impact
     description: "Daily CBD congestion pricing impact — trips, fees, revenue, speed by taxi type"
+    columns:
+      - name: trip_date
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: total_trips
+        tests:
+          - test_positive_value
+      - name: cbd_trips
+        description: "Number of trips with CBD fee > 0"
+        tests:
+          - not_null
+      - name: cbd_trip_pct
+        description: "Percentage of trips with CBD fee"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+              config:
+                severity: warn
+      - name: total_cbd_fees
+        description: "Total CBD congestion fees collected"
+      - name: total_revenue
+        tests:
+          - not_null
+      - name: avg_speed_mph
+        description: "Average speed in mph"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+                row_condition: "avg_speed_mph is not null"
+              config:
+                severity: warn
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_date
+              - taxi_type
 
   - name: met_cbd_vs_non_cbd
     description: "Monthly CBD vs non-CBD zone comparison — revenue, tips, speed, duration"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_cbd_peak_offpeak
     description: "Monthly CBD fees by peak/off-peak time category"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_cbd_yellow_vs_green
     description: "Monthly yellow vs green comparison for CBD congestion metrics"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: total_trips
+        tests:
+          - test_positive_value

@@ -1,0 +1,10 @@
+{
+    "name": "Slack - FinOps Alerts",
+    "type": "slack",
+    "settings": {
+        "url": "__SLACK_WEBHOOK_URL__",
+        "recipient": "#macie-finds",
+        "mentionChannel": "here"
+    },
+    "disableResolveMessage": false
+}

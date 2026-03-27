@@ -3,12 +3,96 @@ version: 2
 models:
   - name: met_zone_pickup_ranking
     description: "Monthly pickup zone ranking — trip count and revenue by zone"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: pickup_borough
+        description: "Pickup borough"
+      - name: pickup_zone
+        description: "Pickup zone name"
+      - name: pu_location_id
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_zone_pair_analysis
     description: "Monthly origin-destination zone pair analysis — trip count, avg fare, distance, duration"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
 
   - name: met_borough_summary
     description: "Monthly borough-level summary — trips, revenue, distance, tip %"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+      - name: pickup_borough
+        description: "NYC borough name"
+        tests:
+          - not_null
+      - name: trip_count
+        tests:
+          - test_positive_value
+      - name: total_revenue
+        tests:
+          - not_null
+      - name: avg_trip_distance
+        description: "Average distance in miles"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 100
+              config:
+                severity: warn
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - trip_month
+              - taxi_type
+              - pickup_borough
 
   - name: met_airport_trips
     description: "Monthly airport trips (JFK/LaGuardia) — pickup vs dropoff, revenue, tips"
+    columns:
+      - name: trip_month
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - not_null
+      - name: airport_name
+        description: "JFK International Airport or LaGuardia Airport"
+      - name: trip_direction
+        description: "pickup or dropoff"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['pickup', 'dropoff']
+      - name: trip_count
+        tests:
+          - test_positive_value
+      - name: total_revenue
+        tests:
+          - not_null

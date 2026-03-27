@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
     paths:
-      - "astro-project/include/dbt_project/**"
+      - "astro-project/**"
       - ".github/workflows/ci.yml"
 
 concurrency:
@@ -85,6 +85,8 @@ jobs:
   dag-validation:
     name: Airflow DAG Validation
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ${{ github.workspace }}/astro-project/include
     steps:
       - uses: actions/checkout@v4
 
@@ -94,9 +96,11 @@ jobs:
           python-version: "3.12"
           cache: pip
 
-      - name: Install Airflow (slim)
+      - name: Install Airflow + providers
         run: |
           pip install "apache-airflow==3.0.1" \
+            "apache-airflow-providers-snowflake>=6.3.0" \
+            "requests" \
             --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-3.0.1/constraints-3.12.txt"
 
       - name: Validate DAG syntax

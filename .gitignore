@@ -1,0 +1,68 @@
+# ========================
+# Secrets & credentials
+# ========================
+.env
+*.env
+.env.*
+secrets.toml
+**/secrets.toml
+credentials.json
+
+# ========================
+# Astronomer / Airflow
+# ========================
+astro-project/.git
+astro-project/.astro/
+astro-project/airflow_settings.yaml
+astro-project/__pycache__/
+astro-project/astro
+astro-project/.venv
+astro-project/airflow-webserver.pid
+astro-project/webserver_config.py
+astro-project/airflow.cfg
+astro-project/airflow.db
+
+# ========================
+# dbt
+# ========================
+**/target/
+**/dbt_packages/
+**/logs/
+**/dbt_modules/
+**/package-lock.yml
+**/.user.yml
+
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ========================
+# IDE
+# ========================
+.vscode/
+.idea/
+*.iml
+
+# ========================
+# Data files (don't commit raw data)
+# ========================
+*.parquet
+*.csv.gz

@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: met_hourly_demand
+    description: "Daily demand by hour and day of week — trip count, duration, speed"
+
+  - name: met_trip_duration_dist
+    description: "Monthly trip duration distribution — bucketed (0-5min, 5-10min, etc.)"
+
+  - name: met_avg_speed_trend
+    description: "Daily average speed trend — distance, duration, mph by taxi type"
+
+  - name: met_vendor_performance
+    description: "Monthly vendor performance — trips, revenue, distance, tips, duration"

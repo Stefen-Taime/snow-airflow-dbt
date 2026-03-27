@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: stg_yellow_taxi_trips
+    description: "Cleaned yellow taxi trips — 1:1 from raw, deduplicated, snake_case columns, surrogate key"
+    columns:
+      - name: trip_surrogate_key
+        description: "Surrogate key (vendor + pickup/dropoff times + locations + fare + distance + payment)"
+        tests:
+          - unique
+          - not_null
+      - name: vendor_id
+        tests:
+          - not_null
+      - name: pickup_datetime
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['yellow']
+
+  - name: stg_green_taxi_trips
+    description: "Cleaned green taxi trips — 1:1 from raw, deduplicated, snake_case columns, surrogate key"
+    columns:
+      - name: trip_surrogate_key
+        description: "Surrogate key (vendor + pickup/dropoff times + locations + fare + distance + payment)"
+        tests:
+          - unique
+          - not_null
+      - name: vendor_id
+        tests:
+          - not_null
+      - name: pickup_datetime
+        tests:
+          - not_null
+      - name: taxi_type
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['green']
+
+  - name: stg_taxi_zone_lookup
+    description: "Taxi zone lookup — filtered Unknown zones (264, 265)"
+    columns:
+      - name: location_id
+        description: "Unique zone identifier"
+        tests:
+          - unique
+          - not_null
+      - name: borough
+        tests:
+          - not_null

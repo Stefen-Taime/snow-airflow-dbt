@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: met_executive_summary
+    description: "Monthly executive summary — trips, revenue, avg fare, CBD fees by taxi type"

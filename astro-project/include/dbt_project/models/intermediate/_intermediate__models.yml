@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: int_trips_unioned
+    description: "Union of yellow and green taxi trips (ephemeral — not materialized)"

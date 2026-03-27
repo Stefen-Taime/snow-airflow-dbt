@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: tlc_trips
+    database: RAW
+    schema: TLC_TRIPS
+    config:
+      freshness:
+        warn_after: { count: 35, period: day }
+        error_after: { count: 65, period: day }
+      loaded_at_field: load_timestamp
+    tables:
+      - name: yellow_taxi_trips
+        description: "Yellow taxi trip records from NYC TLC"
+        columns:
+          - name: VendorID
+            tests:
+              - not_null
+      - name: green_taxi_trips
+        description: "Green taxi trip records from NYC TLC"
+
+  - name: tlc_reference
+    database: RAW
+    schema: TLC_REFERENCE
+    config:
+      freshness:
+        warn_after: { count: 365, period: day }
+        error_after: { count: 730, period: day }
+      loaded_at_field: load_timestamp
+    tables:
+      - name: taxi_zone_lookup
+        description: "265 NYC taxi zones with borough and service zone"

@@ -1,0 +1,15 @@
+# Astro Runtime 3.1 (Airflow 3) - slim image, providers NOT pre-installed
+# Ref: https://www.astronomer.io/docs/runtime/runtime-image-architecture
+
+# Snowflake provider for SQLExecuteQueryOperator, SnowflakeHook
+apache-airflow-providers-snowflake>=6.3.0
+
+# dbt integration for Airflow (Cosmos by Astronomer)
+astronomer-cosmos>=1.5.0
+
+# dbt-core + Snowflake adapter
+dbt-core>=1.9.0
+dbt-snowflake>=1.9.0
+
+# Elementary CLI for data quality reports (edr command)
+elementary-data>=0.15.0

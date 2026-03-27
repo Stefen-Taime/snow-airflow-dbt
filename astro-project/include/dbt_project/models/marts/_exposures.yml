@@ -1,0 +1,79 @@
+version: 2
+
+exposures:
+  - name: dashboard_executive_overview
+    type: application
+    maturity: high
+    url: "https://tlc-dashboards.streamlit.app/Executive_Overview"
+    description: "Executive summary with north star KPIs"
+    depends_on:
+      - ref('met_executive_summary')
+    owner:
+      name: Taime
+      email: taime@mcsedition.com
+
+  - name: dashboard_revenue_analysis
+    type: application
+    maturity: high
+    url: "https://tlc-dashboards.streamlit.app/Revenue"
+    description: "Revenue & fare analysis"
+    depends_on:
+      - ref('met_daily_revenue')
+      - ref('met_revenue_by_zone')
+      - ref('met_revenue_by_rate_code')
+      - ref('met_payment_distribution')
+    owner:
+      name: Taime
+      email: taime@mcsedition.com
+
+  - name: dashboard_geographic_intel
+    type: application
+    maturity: medium
+    url: "https://tlc-dashboards.streamlit.app/Geographic"
+    description: "Zone intelligence and spatial analysis"
+    depends_on:
+      - ref('met_zone_pickup_ranking')
+      - ref('met_zone_pair_analysis')
+      - ref('met_borough_summary')
+      - ref('met_airport_trips')
+    owner:
+      name: Taime
+      email: taime@mcsedition.com
+
+  - name: dashboard_congestion_pricing
+    type: application
+    maturity: high
+    url: "https://tlc-dashboards.streamlit.app/Congestion_Pricing"
+    description: "CBD congestion pricing impact analysis (NEW 2025-2026)"
+    depends_on:
+      - ref('met_cbd_daily_impact')
+      - ref('met_cbd_vs_non_cbd')
+      - ref('met_cbd_peak_offpeak')
+      - ref('met_cbd_yellow_vs_green')
+    owner:
+      name: Taime
+      email: taime@mcsedition.com
+
+  - name: dashboard_operations
+    type: application
+    maturity: medium
+    url: "https://tlc-dashboards.streamlit.app/Operations"
+    description: "Operational performance and demand patterns"
+    depends_on:
+      - ref('met_hourly_demand')
+      - ref('met_trip_duration_dist')
+      - ref('met_avg_speed_trend')
+      - ref('met_vendor_performance')
+    owner:
+      name: Taime
+      email: taime@mcsedition.com
+
+  - name: grafana_finops_dashboard
+    type: dashboard
+    maturity: high
+    url: "https://your-org.grafana.net/d/snowflake-finops"
+    description: "Snowflake FinOps monitoring — credit burn, warehouse metrics, budget alerts"
+    depends_on: []
+    owner:
+      name: Taime
+      email: taime@mcsedition.com

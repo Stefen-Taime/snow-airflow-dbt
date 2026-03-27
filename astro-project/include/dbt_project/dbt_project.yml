@@ -1,0 +1,66 @@
+name: 'tlc_project'
+version: '1.0.0'
+config-version: 2
+profile: 'snowflake'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+snapshot-paths: ["snapshots"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  'dbt_date:time_zone': 'America/New_York'
+
+dispatch:
+  - macro_namespace: dbt
+    search_order: ['dbt_project_evaluator', 'dbt']
+
+seeds:
+  tlc_project:
+    +schema: reference
+    rate_codes:
+      +column_types:
+        rate_code_id: integer
+    payment_types:
+      +column_types:
+        payment_type_id: integer
+    vendor_lookup:
+      +column_types:
+        vendor_id: integer
+
+models:
+  tlc_project:
+    staging:
+      +schema: staging
+      +materialized: incremental
+    intermediate:
+      +schema: intermediate
+      +materialized: ephemeral
+    marts:
+      core:
+        +schema: core
+        +materialized: incremental
+      executive:
+        +schema: executive
+        +materialized: table
+      revenue:
+        +schema: revenue
+        +materialized: table
+      geographic:
+        +schema: geographic
+        +materialized: table
+      congestion:
+        +schema: congestion
+        +materialized: table
+      operations:
+        +schema: operations
+        +materialized: table
+
+snapshots:
+  tlc_project:
+    +target_schema: snapshots

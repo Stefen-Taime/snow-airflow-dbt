@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: met_cbd_daily_impact
+    description: "Daily CBD congestion pricing impact — trips, fees, revenue, speed by taxi type"
+
+  - name: met_cbd_vs_non_cbd
+    description: "Monthly CBD vs non-CBD zone comparison — revenue, tips, speed, duration"
+
+  - name: met_cbd_peak_offpeak
+    description: "Monthly CBD fees by peak/off-peak time category"
+
+  - name: met_cbd_yellow_vs_green
+    description: "Monthly yellow vs green comparison for CBD congestion metrics"

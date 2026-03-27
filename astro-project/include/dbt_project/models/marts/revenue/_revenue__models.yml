@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: met_daily_revenue
+    description: "Daily revenue breakdown — fares, tips, tolls, surcharges, CBD fees by taxi type"
+
+  - name: met_revenue_by_zone
+    description: "Monthly revenue by pickup zone and borough"
+
+  - name: met_revenue_by_rate_code
+    description: "Monthly revenue by rate code (Standard, JFK, Newark, etc.)"
+
+  - name: met_payment_distribution
+    description: "Monthly payment method distribution — trip count, revenue, tip % by payment type"

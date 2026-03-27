@@ -1,0 +1,7 @@
+-- COPY INTO for Yellow Taxi Trips (MATCH_BY_COLUMN_NAME)
+-- Ref: spec.md Section 3.4
+COPY INTO RAW.TLC_TRIPS.yellow_taxi_trips
+FROM @RAW.TLC_TRIPS.tlc_stage/yellow/
+FILE_FORMAT = (FORMAT_NAME = 'RAW.TLC_TRIPS.parquet_format')
+MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE
+ON_ERROR = ABORT_STATEMENT;

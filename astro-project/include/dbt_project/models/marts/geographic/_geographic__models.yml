@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: met_zone_pickup_ranking
+    description: "Monthly pickup zone ranking — trip count and revenue by zone"
+
+  - name: met_zone_pair_analysis
+    description: "Monthly origin-destination zone pair analysis — trip count, avg fare, distance, duration"
+
+  - name: met_borough_summary
+    description: "Monthly borough-level summary — trips, revenue, distance, tip %"
+
+  - name: met_airport_trips
+    description: "Monthly airport trips (JFK/LaGuardia) — pickup vs dropoff, revenue, tips"

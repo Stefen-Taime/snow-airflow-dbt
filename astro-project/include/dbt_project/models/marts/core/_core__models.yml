@@ -1,0 +1,214 @@
+version: 2
+
+groups:
+  - name: tlc_analytics
+    owner:
+      name: "Taime"
+      email: "taime@mcsedition.com"
+
+models:
+  - name: fct_taxi_trips
+    description: "Fact table — all taxi trips enriched with zone, vendor, rate code, payment type"
+    config:
+      group: tlc_analytics
+      access: public
+      on_schema_change: append_new_columns
+      contract:
+        enforced: true
+    latest_version: 1
+    versions:
+      - v: 1
+    columns:
+      - name: trip_surrogate_key
+        data_type: varchar
+        description: "Surrogate key from staging"
+        tests:
+          - unique
+          - not_null
+      - name: vendor_id
+        data_type: integer
+        description: "Vendor identifier"
+        tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 6]
+              config:
+                severity: warn
+      - name: vendor_name
+        data_type: varchar
+        description: "Vendor display name from seed lookup"
+      - name: pickup_datetime
+        data_type: timestamp_ntz
+        description: "Trip pickup timestamp"
+        tests:
+          - not_null
+      - name: dropoff_datetime
+        data_type: timestamp_ntz
+        description: "Trip dropoff timestamp"
+      - name: passenger_count
+        data_type: float
+        description: "Number of passengers"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 9
+                row_condition: "passenger_count is not null"
+      - name: trip_distance
+        data_type: float
+        description: "Trip distance in miles"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 500
+                row_condition: "trip_distance is not null"
+              config:
+                severity: warn
+      - name: pu_location_id
+        data_type: integer
+        description: "Pickup location zone ID"
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_zones')
+                field: location_id
+              config:
+                severity: warn
+      - name: pickup_zone
+        data_type: varchar
+        description: "Pickup zone name"
+      - name: pickup_borough
+        data_type: varchar
+        description: "Pickup borough"
+      - name: do_location_id
+        data_type: integer
+        description: "Dropoff location zone ID"
+      - name: dropoff_zone
+        data_type: varchar
+        description: "Dropoff zone name"
+      - name: dropoff_borough
+        data_type: varchar
+        description: "Dropoff borough"
+      - name: rate_code_id
+        data_type: float
+        description: "Rate code identifier"
+      - name: rate_code_name
+        data_type: varchar
+        description: "Rate code display name from seed lookup"
+      - name: payment_type_id
+        data_type: integer
+        description: "Payment type identifier"
+      - name: payment_type_name
+        data_type: varchar
+        description: "Payment type display name from seed lookup"
+      - name: fare_amount
+        data_type: float
+        description: "Base fare amount"
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: -100
+                max_value: 2000
+                row_condition: "fare_amount is not null"
+              config:
+                severity: warn
+      - name: extra
+        data_type: float
+        description: "Extra charges (rush hour, overnight)"
+      - name: mta_tax
+        data_type: float
+        description: "MTA tax surcharge"
+      - name: tip_amount
+        data_type: float
+        description: "Tip amount"
+      - name: tolls_amount
+        data_type: float
+        description: "Toll charges"
+      - name: improvement_surcharge
+        data_type: float
+        description: "Improvement surcharge"
+      - name: total_amount
+        data_type: float
+        description: "Total trip amount"
+      - name: congestion_surcharge
+        data_type: float
+        description: "Congestion surcharge"
+      - name: airport_fee
+        data_type: float
+        description: "Airport pickup fee"
+      - name: cbd_congestion_fee
+        data_type: float
+        description: "CBD congestion pricing fee (effective Jan 2025)"
+      - name: taxi_type
+        data_type: varchar
+        description: "Taxi type: yellow or green"
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['yellow', 'green']
+    # Elementary observability (inline, same DAG)
+    tests:
+      - elementary.volume_anomalies:
+          arguments:
+            timestamp_column: pickup_datetime
+            where_expression: "pickup_datetime >= DATEADD(month, -3, CURRENT_DATE)"
+          config:
+            severity: warn
+      - elementary.schema_changes:
+          config:
+            severity: warn
+
+  - name: dim_zones
+    description: "Dimension — taxi zones (excluding Unknown 264/265)"
+    config:
+      group: tlc_analytics
+      access: public
+    columns:
+      - name: location_id
+        description: "Unique zone identifier (1-263)"
+        tests:
+          - unique
+          - not_null
+      - name: borough
+        description: "NYC borough name"
+        tests:
+          - not_null
+      - name: zone_name
+        description: "Zone name"
+        tests:
+          - not_null
+      - name: service_zone
+        description: "Service zone classification"
+
+  - name: dim_vendors
+    description: "Dimension — taxi vendor lookup"
+    config:
+      group: tlc_analytics
+      access: public
+    columns:
+      - name: vendor_id
+        description: "Vendor identifier (1=CMT, 2=VeriFone, 6=Novatel)"
+        tests:
+          - unique
+          - not_null
+      - name: vendor_name
+        description: "Vendor display name"
+        tests:
+          - not_null
+
+  - name: dim_rate_codes
+    description: "Dimension — rate code lookup"
+    config:
+      group: tlc_analytics
+      access: public
+    columns:
+      - name: rate_code_id
+        description: "Rate code identifier (1-6)"
+        tests:
+          - unique
+          - not_null
+      - name: rate_code_name
+        description: "Rate code display name"
+        tests:
+          - not_null

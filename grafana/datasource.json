@@ -1,0 +1,18 @@
+{
+  "name": "Snowflake - FinOps",
+  "type": "grafana-snowflake-datasource",
+  "access": "proxy",
+  "isDefault": false,
+  "jsonData": {
+    "account": "KYEUCFS-BQ14035",
+    "username": "STEFEN",
+    "role": "ACCOUNTADMIN",
+    "warehouse": "TLC_WH",
+    "database": "SNOWFLAKE",
+    "schema": "ACCOUNT_USAGE",
+    "authenticationType": "password"
+  },
+  "secureJsonData": {
+    "password": "__SNOWFLAKE_PASSWORD__"
+  }
+}

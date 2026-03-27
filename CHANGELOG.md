@@ -4,6 +4,27 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
 
 ## [Unreleased]
 
+### 2026-03-27 — Grafana FinOps Dashboard (spec Section 11)
+
+- Created `grafana/` directory with infrastructure-as-code provisioning files
+- `datasource.json` — Snowflake datasource config for Grafana Cloud (`grafana-snowflake-datasource` plugin v1.14.12)
+  - Connects to `SNOWFLAKE.ACCOUNT_USAGE` with `ACCOUNTADMIN` role, `TLC_WH` warehouse
+  - Password auth (placeholder `__SNOWFLAKE_PASSWORD__` replaced at deploy time)
+- `finops-dashboard.json` — Full Grafana dashboard (6 panels):
+  - Panel 1: **Credit Burn Rate** (daily bar chart + USD cost line, dual-axis)
+  - Panel 2: **Cumulative Credits vs Budget** (running total with $350 budget threshold dashed line)
+  - Panel 3: **Credits by Warehouse** (donut pie chart)
+  - Panel 4: **Top 10 Expensive Queries** (table with gauge for duration, last 7 days)
+  - Panel 5: **Storage Usage Trend** (stacked area: database/stage/failsafe in GB)
+  - Panel 6: **Warehouse Credit Breakdown** (stacked bar: compute vs cloud services + % line)
+- `deploy.sh` — Automated provisioning script (idempotent: create or update)
+  - Checks Snowflake plugin is installed
+  - Creates/updates datasource via Grafana API
+  - Deploys dashboard via `/api/dashboards/db`
+  - Requires: `GRAFANA_URL`, `GRAFANA_TOKEN` (Service Account), `SNOWFLAKE_PASSWORD`
+- Target Grafana Cloud instance: `https://stefentaime.grafana.net` (v13.0.0, Enterprise)
+- All queries use `SNOWFLAKE.ACCOUNT_USAGE` views (METERING_DAILY_HISTORY, WAREHOUSE_METERING_HISTORY, QUERY_HISTORY, STORAGE_USAGE)
+
 ### 2026-03-27 — Streamlit Dashboards (spec Section 10)
 
 - Created `streamlit_app/` directory with full multi-page Plotly dashboard application

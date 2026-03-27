@@ -4,6 +4,23 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
 
 ## [Unreleased]
 
+### 2026-03-27 — Streamlit Dashboards (spec Section 10)
+
+- Created `streamlit_app/` directory with full multi-page Plotly dashboard application
+- Structure: `app.py` (entry point with `st.navigation`), `utils/snowflake_conn.py`, 5 dashboard pages
+- Configured `.streamlit/config.toml` with dark theme (primary: #FF6B35, bg: #0E1117)
+- Configured `.streamlit/secrets.toml` for `st.connection("snowflake")` (excluded from git via `**/secrets.toml`)
+- Connection manager uses `st.cache_resource` + `conn.query(ttl=600)` for cached queries
+- Page 1 — **Executive Overview**: KPI cards (6 metrics), dual-axis bar+line for monthly trips/revenue, donut chart for taxi type split, avg fare trend, CBD adoption chart
+- Page 2 — **Revenue Analysis**: daily revenue area chart, stacked revenue component breakdown (fares/tips/tolls/surcharges/CBD), top 15 zones horizontal bar with colorscale, rate code donut, payment distribution 100% stacked bar
+- Page 3 — **Geographic Intel**: top 20 pickup zones (Turbo colorscale), borough trip trend lines, avg rev/trip by borough, top 15 route corridors with Viridis color-encoded fare, airport sunburst + trend
+- Page 4 — **Congestion Pricing**: CBD daily impact dual-axis, CBD vs Non-CBD faceted grouped bars (revenue + speed), peak vs off-peak stacked fees, yellow vs green CBD penetration
+- Page 5 — **Operations**: hourly demand heatmap (Inferno), duration distribution grouped bars, fare vs distance by duration bucket, daily speed trend with NYC avg reference line, vendor radar chart, vendor summary table
+- All charts use `plotly_dark` template with transparent backgrounds, professional color palettes, and responsive layouts
+- Queries target pre-aggregated dbt mart tables only (16 models across 5 schemas: EXECUTIVE, REVENUE, GEOGRAPHIC, CONGESTION, OPERATIONS)
+- Tested locally: `streamlit run app.py` on port 8502 — HTTP 200, health check OK
+- Requirements: `streamlit>=1.41.0`, `plotly>=5.24.0`, `snowflake-connector-python[pandas]>=3.12.0`, `pandas>=2.2.0`
+
 ### 2026-03-27 — Astronomer Setup
 
 - Installed Astro CLI v1.40.1 via Homebrew (macOS)

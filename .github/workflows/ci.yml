@@ -117,3 +117,24 @@ jobs:
                   print(f'FAIL: {dag_file} -> {e}')
                   sys.exit(1)
           "
+
+  notify-failure:
+    name: Slack Notification (CI Failure)
+    runs-on: ubuntu-latest
+    needs: [lint, build-and-test, dag-validation]
+    if: failure()
+    steps:
+      - uses: ravsamhq/notify-slack-action@v2.5.0
+        with:
+          status: failure
+          notification_title: ":x: CI Failed — {repo}"
+          message_format: >-
+            :warning: *{workflow}* failed on `{branch}` by *{author}*
+
+            Failed job(s): *{failed_jobs}*
+
+            <{run_url}|View workflow run>
+          footer: "snow-airflow-dbt CI/CD Pipeline"
+          notify_when: "failure"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

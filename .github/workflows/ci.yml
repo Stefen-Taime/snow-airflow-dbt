@@ -124,7 +124,7 @@ jobs:
     needs: [lint, build-and-test, dag-validation]
     if: failure()
     steps:
-      - uses: ravsamhq/notify-slack-action@v2.5.0
+      - uses: ravsamhq/notify-slack-action@2.5.0
         with:
           status: failure
           notification_title: ":x: CI Failed — {repo}"

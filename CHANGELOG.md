@@ -24,6 +24,10 @@ All notable changes to the `snow-airflow-dbt` project will be documented in this
   - Requires: `GRAFANA_URL`, `GRAFANA_TOKEN` (Service Account), `SNOWFLAKE_PASSWORD`
 - Target Grafana Cloud instance: `https://stefentaime.grafana.net` (v13.0.0, Enterprise)
 - All queries use `SNOWFLAKE.ACCOUNT_USAGE` views (METERING_DAILY_HISTORY, WAREHOUSE_METERING_HISTORY, QUERY_HISTORY, STORAGE_USAGE)
+- **Deployed to Grafana Cloud:**
+  - Installed `grafana-snowflake-datasource` plugin v1.15.0 via API (`POST /api/plugins/.../install`)
+  - Created datasource `Snowflake - FinOps` (UID: `afhbjh3vp730gd`)
+  - Deployed 6-panel FinOps dashboard: `https://stefentaime.grafana.net/d/snowflake-finops/snowflake-finops-credit-and-cost-monitoring`
 
 ### 2026-03-27 — Streamlit Dashboards (spec Section 10)
 

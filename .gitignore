@@ -12,7 +12,8 @@ credentials.json
 # Astronomer / Airflow
 # ========================
 astro-project/.git
-astro-project/.astro/
+astro-project/.astro/*
+!astro-project/.astro/config.yaml
 astro-project/airflow_settings.yaml
 astro-project/__pycache__/
 astro-project/astro

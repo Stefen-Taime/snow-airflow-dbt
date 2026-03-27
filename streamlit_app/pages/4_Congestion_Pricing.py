@@ -14,10 +14,10 @@ from utils.snowflake_conn import run_query
 st.header("Congestion Pricing Impact (CBD)")
 
 # ── Data ─────────────────────────────────────────────────────────
-df_cbd = run_query("SELECT * FROM ANALYTICS.CONGESTION.MET_CBD_DAILY_IMPACT ORDER BY TRIP_DATE")
-df_compare = run_query("SELECT * FROM ANALYTICS.CONGESTION.MET_CBD_VS_NON_CBD ORDER BY TRIP_MONTH")
-df_peak = run_query("SELECT * FROM ANALYTICS.CONGESTION.MET_CBD_PEAK_OFFPEAK ORDER BY TRIP_MONTH")
-df_yg = run_query("SELECT * FROM ANALYTICS.CONGESTION.MET_CBD_YELLOW_VS_GREEN ORDER BY TRIP_MONTH")
+df_cbd = run_query("SELECT * FROM ANALYTICS.PUBLIC_CONGESTION.MET_CBD_DAILY_IMPACT ORDER BY TRIP_DATE")
+df_compare = run_query("SELECT * FROM ANALYTICS.PUBLIC_CONGESTION.MET_CBD_VS_NON_CBD ORDER BY TRIP_MONTH")
+df_peak = run_query("SELECT * FROM ANALYTICS.PUBLIC_CONGESTION.MET_CBD_PEAK_OFFPEAK ORDER BY TRIP_MONTH")
+df_yg = run_query("SELECT * FROM ANALYTICS.PUBLIC_CONGESTION.MET_CBD_YELLOW_VS_GREEN ORDER BY TRIP_MONTH")
 
 if df_cbd.empty:
     st.warning("No congestion data available.")

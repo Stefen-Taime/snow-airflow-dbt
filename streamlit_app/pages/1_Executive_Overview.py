@@ -11,12 +11,12 @@ from utils.snowflake_conn import run_query
 
 # ── Page config ──────────────────────────────────────────────────
 st.header("Executive Overview")
-st.caption("Monthly aggregates from `ANALYTICS.EXECUTIVE.MET_EXECUTIVE_SUMMARY`")
+st.caption("Monthly aggregates from `ANALYTICS.PUBLIC_EXECUTIVE.MET_EXECUTIVE_SUMMARY`")
 
 # ── Data ─────────────────────────────────────────────────────────
 df = run_query("""
     SELECT *
-    FROM ANALYTICS.EXECUTIVE.MET_EXECUTIVE_SUMMARY
+    FROM ANALYTICS.PUBLIC_EXECUTIVE.MET_EXECUTIVE_SUMMARY
     ORDER BY TRIP_MONTH
 """)
 

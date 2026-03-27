@@ -13,10 +13,10 @@ from utils.snowflake_conn import run_query
 st.header("Geographic Intelligence")
 
 # ── Data ─────────────────────────────────────────────────────────
-df_ranking = run_query("SELECT * FROM ANALYTICS.GEOGRAPHIC.MET_ZONE_PICKUP_RANKING ORDER BY TRIP_COUNT DESC")
-df_pairs = run_query("SELECT * FROM ANALYTICS.GEOGRAPHIC.MET_ZONE_PAIR_ANALYSIS ORDER BY TRIP_COUNT DESC")
-df_borough = run_query("SELECT * FROM ANALYTICS.GEOGRAPHIC.MET_BOROUGH_SUMMARY ORDER BY TRIP_MONTH")
-df_airport = run_query("SELECT * FROM ANALYTICS.GEOGRAPHIC.MET_AIRPORT_TRIPS ORDER BY TRIP_MONTH")
+df_ranking = run_query("SELECT * FROM ANALYTICS.PUBLIC_GEOGRAPHIC.MET_ZONE_PICKUP_RANKING ORDER BY TRIP_COUNT DESC")
+df_pairs = run_query("SELECT * FROM ANALYTICS.PUBLIC_GEOGRAPHIC.MET_ZONE_PAIR_ANALYSIS ORDER BY TRIP_COUNT DESC")
+df_borough = run_query("SELECT * FROM ANALYTICS.PUBLIC_GEOGRAPHIC.MET_BOROUGH_SUMMARY ORDER BY TRIP_MONTH")
+df_airport = run_query("SELECT * FROM ANALYTICS.PUBLIC_GEOGRAPHIC.MET_AIRPORT_TRIPS ORDER BY TRIP_MONTH")
 
 if df_ranking.empty:
     st.warning("No geographic data available.")

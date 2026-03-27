@@ -19,7 +19,7 @@ models:
         description: "Total trip count for the month"
         tests:
           - not_null
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         description: "Sum of total_amount"
         tests:

@@ -19,7 +19,7 @@ models:
         description: "Number of trips"
         tests:
           - not_null
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         description: "Sum of total_amount"
         tests:
@@ -71,7 +71,7 @@ models:
       - name: trip_count
         description: "Number of trips"
         tests:
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         description: "Sum of total_amount"
       - name: avg_revenue_per_trip
@@ -102,7 +102,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_payment_distribution
     description: "Monthly payment method distribution — trip count, revenue, tip % by payment type"
@@ -118,4 +118,4 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value

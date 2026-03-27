@@ -31,7 +31,7 @@ models:
                 values: ['yellow', 'green']
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
       - name: avg_duration_min
         description: "Average trip duration in minutes"
         tests:
@@ -64,7 +64,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_avg_speed_trend
     description: "Daily average speed trend — distance, duration, mph by taxi type"
@@ -80,7 +80,7 @@ models:
                 values: ['yellow', 'green']
       - name: total_trips
         tests:
-          - test_positive_value
+          - positive_value
       - name: avg_speed_mph
         description: "Average speed in mph"
         tests:
@@ -118,7 +118,7 @@ models:
                 values: ['yellow', 'green']
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         tests:
           - not_null

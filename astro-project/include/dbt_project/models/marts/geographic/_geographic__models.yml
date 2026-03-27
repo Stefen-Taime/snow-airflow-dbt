@@ -22,7 +22,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_zone_pair_analysis
     description: "Monthly origin-destination zone pair analysis — trip count, avg fare, distance, duration"
@@ -32,7 +32,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_borough_summary
     description: "Monthly borough-level summary — trips, revenue, distance, tip %"
@@ -52,7 +52,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         tests:
           - not_null
@@ -92,7 +92,7 @@ models:
                 values: ['pickup', 'dropoff']
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
       - name: total_revenue
         tests:
           - not_null

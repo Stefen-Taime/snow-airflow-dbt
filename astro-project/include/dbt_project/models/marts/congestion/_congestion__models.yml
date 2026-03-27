@@ -15,7 +15,7 @@ models:
                 values: ['yellow', 'green']
       - name: total_trips
         tests:
-          - test_positive_value
+          - positive_value
       - name: cbd_trips
         description: "Number of trips with CBD fee > 0"
         tests:
@@ -62,7 +62,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_cbd_peak_offpeak
     description: "Monthly CBD fees by peak/off-peak time category"
@@ -75,7 +75,7 @@ models:
           - not_null
       - name: trip_count
         tests:
-          - test_positive_value
+          - positive_value
 
   - name: met_cbd_yellow_vs_green
     description: "Monthly yellow vs green comparison for CBD congestion metrics"
@@ -91,4 +91,4 @@ models:
                 values: ['yellow', 'green']
       - name: total_trips
         tests:
-          - test_positive_value
+          - positive_value

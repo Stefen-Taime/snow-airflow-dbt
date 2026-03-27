@@ -59,27 +59,15 @@ jobs:
 
       - name: dbt deps
         working-directory: ${{ env.DBT_PROJECT_DIR }}
-        run: dbt deps
+        run: dbt deps --profiles-dir . --project-dir .
 
       - name: dbt build
         working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt build \
-            --select state:modified+ \
-            --defer \
-            --state target-base/ \
             --profiles-dir . \
             --project-dir .
         continue-on-error: false
-
-      - name: dbt_project_evaluator
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
-        run: |
-          dbt test \
-            --select package:dbt_project_evaluator \
-            --profiles-dir . \
-            --project-dir .
-        continue-on-error: true
 
   dag-validation:
     name: Airflow DAG Validation

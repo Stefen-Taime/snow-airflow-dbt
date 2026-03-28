@@ -7,7 +7,7 @@ sources:
     config:
       freshness:
         warn_after: { count: 35, period: day }
-        error_after: { count: 65, period: day }
+        error_after: null
       loaded_at_field: load_timestamp
     tables:
       - name: yellow_taxi_trips

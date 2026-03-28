@@ -54,9 +54,17 @@ DEFAULT_ARGS = {
 # Helper functions
 # ---------------------------------------------------------------------------
 def _get_data_months() -> list[str]:
-    """Return list of year-month strings to process from Airflow variable."""
+    """Return list of year-month strings to process from Airflow variable.
+
+    Accepts both JSON array (``["2024-01","2024-02"]``) and
+    comma-separated (``2024-01,2024-02``) formats.
+    """
     raw = Variable.get("tlc_data_months", default_var='["2026-01"]')
-    return json.loads(raw)
+    try:
+        months = json.loads(raw)
+    except (json.JSONDecodeError, TypeError):
+        months = [m.strip() for m in raw.split(",") if m.strip()]
+    return months
 
 
 def _download_file(url: str, dest: str) -> str:

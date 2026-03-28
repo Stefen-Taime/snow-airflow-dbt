@@ -4,12 +4,8 @@ DAG 2: tlc_dbt_transform
 Triggered by DAG 1 (tlc_raw_ingestion) after raw data is loaded.
 
 Steps:
-  0. dbt deps              — install dbt package dependencies
-  1. dbt source freshness  — verify raw data is fresh
-  2. dbt seed              — load reference CSVs (rate_codes, payment_types, vendor_lookup)
-  3. dbt run               — materialize all models (staging → intermediate → marts)
-  4. dbt test              — run data quality tests (non-blocking)
-  5. elementary report     — generate data quality HTML report
+  1. dbt pipeline          — deps → source freshness → seed → run → test (single task)
+  2. elementary report     — generate data quality HTML report
 
 Uses BashOperator for dbt CLI commands.
 Cosmos DbtTaskGroup can be added later for model-level observability.
@@ -70,40 +66,25 @@ with DAG(
     on_failure_callback=on_dag_failure,
 ) as dag:
 
-    # === 0. dbt deps (install packages) ======================================
-    task_dbt_deps = BashOperator(
-        task_id="dbt_deps",
-        bash_command=f"{DBT_CMD} deps {DBT_GLOBAL_FLAGS}",
+    # === 1. dbt pipeline (deps → source freshness → seed → run → test) =======
+    task_dbt_pipeline = BashOperator(
+        task_id="dbt_pipeline",
+        bash_command=(
+            f"set -e && "
+            f"{DBT_CMD} deps {DBT_GLOBAL_FLAGS} && "
+            f"{DBT_CMD} source freshness {DBT_GLOBAL_FLAGS} && "
+            f"{DBT_CMD} seed {DBT_GLOBAL_FLAGS} && "
+            f"{DBT_CMD} run {DBT_GLOBAL_FLAGS} && "
+            f"({DBT_CMD} test {DBT_GLOBAL_FLAGS} || true)"
+        ),
     )
 
-    # === 1. dbt source freshness ============================================
-    task_source_freshness = BashOperator(
-        task_id="dbt_source_freshness",
-        bash_command=f"{DBT_CMD} source freshness {DBT_GLOBAL_FLAGS}",
-    )
-
-    # === 2. dbt seed ========================================================
-    task_dbt_seed = BashOperator(
-        task_id="dbt_seed",
-        bash_command=f"{DBT_CMD} seed {DBT_GLOBAL_FLAGS}",
-    )
-
-    # === 3. dbt run ===========================================================
-    task_dbt_run = BashOperator(
-        task_id="dbt_run",
-        bash_command=f"{DBT_CMD} run {DBT_GLOBAL_FLAGS}",
-    )
-
-    # === 4. dbt test (non-blocking) ==========================================
-    task_dbt_test = BashOperator(
-        task_id="dbt_test",
-        bash_command=f"{DBT_CMD} test {DBT_GLOBAL_FLAGS} || true",
-    )
-
-    # === 5. elementary report ===============================================
+    # === 2. elementary report ===============================================
     task_elementary_report = BashOperator(
         task_id="elementary_report",
         bash_command=(
+            f"cd {DBT_PROJECT_DIR} && "
+            f"{DBT_CMD} deps {DBT_GLOBAL_FLAGS} && "
             f"edr report --project-dir {DBT_PROJECT_DIR} "
             f"--profiles-dir {DBT_PROFILES_DIR} "
             f"--target-path {DBT_PROJECT_DIR}/target/elementary_report.html"
@@ -111,4 +92,4 @@ with DAG(
     )
 
     # === Dependencies ========================================================
-    task_dbt_deps >> task_source_freshness >> task_dbt_seed >> task_dbt_run >> task_dbt_test >> task_elementary_report
+    task_dbt_pipeline >> task_elementary_report

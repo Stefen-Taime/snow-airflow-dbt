@@ -106,7 +106,7 @@ with DAG(
         bash_command=(
             f"edr report --project-dir {DBT_PROJECT_DIR} "
             f"--profiles-dir {DBT_PROFILES_DIR} "
-            f"--output-path {DBT_PROJECT_DIR}/target/elementary_report.html"
+            f"--target-path {DBT_PROJECT_DIR}/target/elementary_report.html"
         ),
     )
 

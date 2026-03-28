@@ -11,3 +11,4 @@ SELECT
     SERVICE_ZONE
 FROM {{ source('tlc_reference', 'taxi_zone_lookup') }}
 WHERE LOCATIONID NOT IN (264, 265)  -- Filter Unknown zones
+QUALIFY ROW_NUMBER() OVER (PARTITION BY LOCATIONID ORDER BY LOCATIONID) = 1

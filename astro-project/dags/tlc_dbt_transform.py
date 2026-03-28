@@ -83,11 +83,11 @@ with DAG(
     task_elementary_report = BashOperator(
         task_id="elementary_report",
         bash_command=(
-            f"cd {DBT_PROJECT_DIR} && "
-            f"{DBT_CMD} deps {DBT_GLOBAL_FLAGS} && "
-            f"edr report --project-dir {DBT_PROJECT_DIR} "
-            f"--profiles-dir {DBT_PROFILES_DIR} "
-            f"--target-path {DBT_PROJECT_DIR}/target/elementary_report.html"
+            f"cp -r {DBT_PROJECT_DIR} /tmp/dbt_project && "
+            f"{DBT_CMD} deps --project-dir /tmp/dbt_project --profiles-dir /tmp/dbt_project && "
+            f"edr report --project-dir /tmp/dbt_project "
+            f"--profiles-dir /tmp/dbt_project "
+            f"--target-path /tmp/dbt_project/target/elementary_report.html"
         ),
     )
 

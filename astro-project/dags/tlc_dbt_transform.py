@@ -4,6 +4,7 @@ DAG 2: tlc_dbt_transform
 Triggered by DAG 1 (tlc_raw_ingestion) after raw data is loaded.
 
 Steps:
+  0. dbt deps              — install dbt package dependencies
   1. dbt source freshness  — verify raw data is fresh
   2. dbt seed              — load reference CSVs (rate_codes, payment_types, vendor_lookup)
   3. dbt build             — run + test all models (staging → intermediate → marts)
@@ -68,6 +69,12 @@ with DAG(
     on_failure_callback=on_dag_failure,
 ) as dag:
 
+    # === 0. dbt deps (install packages) ======================================
+    task_dbt_deps = BashOperator(
+        task_id="dbt_deps",
+        bash_command=f"{DBT_CMD} deps {DBT_GLOBAL_FLAGS}",
+    )
+
     # === 1. dbt source freshness ============================================
     task_source_freshness = BashOperator(
         task_id="dbt_source_freshness",
@@ -99,4 +106,4 @@ with DAG(
     )
 
     # === Dependencies ========================================================
-    task_source_freshness >> task_dbt_seed >> task_dbt_build >> task_elementary_report
+    task_dbt_deps >> task_source_freshness >> task_dbt_seed >> task_dbt_build >> task_elementary_report

@@ -327,6 +327,136 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on PRs to `main`:
 
 ---
 
+## Visualizations
+
+### Grafana FinOps Monitoring
+
+#### Credit Burn Rate & Budget Tracking
+
+![Grafana FinOps - Credits & Budget](img/grafana-finops-credits-budget.png)
+
+Dashboard principal de suivi FinOps sur Grafana Cloud. Ce panneau offre une vue d'ensemble de la consommation Snowflake sur les 30 derniers jours :
+
+- **Credit Burn Rate (Daily)** : graphique combinant le nombre de credits consommes par jour (barres) et le cout estime en dollars (ligne rouge). La moyenne journaliere est de 1.23 credit pour un total de 23.4 credits sur la periode, soit un cout estime de $81.80.
+- **Cumulative Credit Consumption vs Budget** : suivi de la consommation cumulee (ligne orange) comparee au budget alloue de 100 credits (ligne rouge pointillee). Permet d'anticiper les depassements budgetaires avant qu'ils ne surviennent.
+- **Credits by Warehouse (Last 30d)** : repartition des credits par warehouse sous forme de donut chart. Permet d'identifier les warehouses les plus consommateurs (COMPUTE_WH, ANALYTICS_WH, TLC_WH, etc.).
+- **Top 10 Most Expensive Queries (Last 7d)** : tableau listant les requetes les plus couteuses avec leur duree d'execution, le volume de donnees scannees et les credits cloud consommes.
+
+#### Storage & Warehouse Breakdown
+
+![Grafana FinOps - Storage & Warehouses](img/grafana-finops-storage-warehouses.png)
+
+Panneaux complementaires du dashboard FinOps :
+
+- **Storage Usage Trend (Last 30d)** : evolution du stockage Snowflake reparti en trois categories : Database (210 MB), Stage (0 GB) et Fail-safe (3.19 GB). La croissance du stockage est visible a partir de mi-mars avec l'ingestion des donnees TLC.
+- **Warehouse Credit Breakdown** : decomposition detaillee des credits par warehouse, separant les credits de calcul (compute), les credits cloud services et le pourcentage de cloud services. Utile pour detecter les warehouses avec un ratio cloud services anormalement eleve (seuil d'alerte > 10%).
+
+---
+
+### Streamlit Dashboards
+
+#### Revenue Analysis
+
+![Streamlit - Revenue Analysis](img/streamlit-revenue-analysis.png)
+
+Page d'analyse des revenus du dashboard Streamlit. La barre de KPIs en haut affiche les metriques cles :
+
+- **Total Revenue** : $109.6M generes sur la periode analysee
+- **Total Trips** : 3.76M de courses
+- **Avg Rev / Trip** : $26.70 de revenu moyen par course
+- **Total Tips** : $9.8M de pourboires
+- **Avg Tip %** : 14.0% de taux de pourboire moyen
+- **Rev / Mile** : $5.99 de revenu par mile
+
+Le graphique **Daily Revenue Trend** montre l'evolution quotidienne du revenu (ligne orange) superposee au nombre de courses (ligne verte pointillee). On observe une forte correlation entre volume de courses et revenu, avec une baisse notable fin janvier (probablement liee aux conditions meteorologiques hivernales).
+
+#### Revenue Breakdown, Zones & Rate Codes
+
+![Streamlit - Revenue Breakdown & Zones](img/streamlit-revenue-breakdown-zones.png)
+
+Decomposition detaillee des revenus :
+
+- **Revenue Component Breakdown (Daily)** : graphique en aires empilees montrant la composition du revenu quotidien (Fares, Tips, Tolls, Congestion Surcharge, Airport Fees, CBD Fees). Les tarifs de base (Fares) representent la grande majorite du revenu.
+- **Top 15 Zones by Revenue** : classement des zones par revenu total. JFK Airport domine avec $11M, suivi de LaGuardia Airport ($5.6M) et Midtown Center ($3.9M). Les zones aeroportuaires et de Manhattan concentrent l'essentiel des revenus.
+- **Revenue by Rate Code** : repartition par type de tarification. Le tarif standard represente la quasi-totalite des revenus (>80%), suivi du tarif JFK (10.5%), des tarifs negocies (3.8%) et des destinations hors zone (Newark, Nassau/Westchester).
+
+#### Geographic Intelligence - Pickup Zones
+
+![Streamlit - Geographic Pickup Zones](img/streamlit-geographic-pickup-zones.png)
+
+Page d'intelligence geographique avec les KPIs cles : 259 zones actives, 6 boroughs couverts, Upper East Side South comme zone la plus active, et 281,581 courses aeroportuaires.
+
+Le graphique **Top 20 Pickup Zones** classe les zones de prise en charge par volume de courses. Upper East Side South (160K), Upper East Side North (154K) et JFK Airport (153K) forment le top 3. Les zones de Manhattan dominent largement, avec une echelle de couleurs allant du rouge (volume eleve) au bleu (volume plus faible).
+
+#### Geographic Intelligence - Boroughs & Route Corridors
+
+![Streamlit - Geographic Boroughs & Routes](img/streamlit-geographic-boroughs-routes.png)
+
+Analyses geographiques avancees :
+
+- **Borough Trip Volume Trend** : evolution du volume de courses par borough au fil du temps. Manhattan domine massivement avec plus de 3M de courses, loin devant Queens et les autres boroughs.
+- **Avg Revenue per Trip by Borough** : revenu moyen par course par borough. EWR (Newark Airport) affiche le revenu le plus eleve a $127.49/course, suivi de Staten Island ($42.66) et Queens ($41.23). Manhattan, malgre son volume, a un revenu moyen plus faible ($23.80) du fait de courses plus courtes.
+- **Top 15 Route Corridors (Pickup -> Dropoff)** : les corridors les plus frequentes. Les trajets Upper East Side South <-> Upper East Side North dominent, typiques des deplacements locaux dans les quartiers residentiels aises de Manhattan.
+
+#### Geographic Intelligence - Airport Analysis
+
+![Streamlit - Geographic Airport Analysis](img/streamlit-geographic-airport-analysis.png)
+
+Analyse specifique du trafic aeroportuaire :
+
+- **Airport Trip Analysis (Sunburst)** : graphique sunburst montrant la repartition pickup/dropoff pour JFK et LaGuardia. JFK genere un revenu total nettement superieur (>$10M) par rapport a LaGuardia, avec une repartition equilibree entre prises en charge et depositions.
+- **Airport Trips Timeline** : evolution cumulee des courses aeroportuaires. JFK (orange) represente environ le double du volume de LaGuardia (turquoise), avec une croissance lineaire sur la periode.
+
+#### Congestion Pricing Impact
+
+![Streamlit - Congestion Pricing Impact](img/streamlit-congestion-pricing-impact.png)
+
+Analyse de l'impact du peage de congestion (CBD - Central Business District) :
+
+- **KPIs** : $1.9M de frais CBD collectes, 37.9% des courses passant par le CBD, frais moyen de $0.75/course, vitesse moyenne de 14.3 mph dans le CBD, 2.6M de courses CBD, et $5.99 de revenu par mile.
+- **CBD Trip Volume & Fee Collection (Daily)** : graphique combinant le volume quotidien de courses CBD (barres oranges) et les frais collectes (ligne turquoise). Le volume oscille entre 60K et 100K courses/jour avec une tendance stable, demontrant que le peage de congestion n'a pas significativement reduit le trafic.
+
+#### Congestion - CBD vs Non-CBD Comparison
+
+![Streamlit - CBD vs Non-CBD Comparison](img/streamlit-congestion-cbd-comparison.png)
+
+Comparaison directe entre zones CBD et non-CBD :
+
+- **Avg Revenue / Trip: CBD vs Non-CBD** : les courses CBD generent un revenu moyen par course inferieur aux courses non-CBD pour les taxis yellow ($63 vs $29), mais similaire pour les taxis green. Cela s'explique par les distances plus courtes dans le CBD.
+- **Avg Speed: CBD vs Non-CBD (mph)** : la vitesse moyenne dans le CBD est nettement inferieure a celle hors CBD, particulierement marquee pour les taxis green. Les taxis yellow maintiennent des vitesses relativement basses dans les deux zones du fait de la densite du trafic manhattanien.
+
+#### Congestion - Yellow vs Green CBD Penetration
+
+![Streamlit - Yellow vs Green CBD Penetration](img/streamlit-congestion-yellow-vs-green.png)
+
+Analyse de la penetration CBD par type de taxi :
+
+- **CBD Trips by Taxi Type** : les taxis yellow representent environ 70% des courses CBD (ligne jaune stable autour de 70-80%), tandis que les taxis green restent marginaux (<10%). Cela reflete la reglementation qui restreint les taxis green principalement aux boroughs exterieurs.
+- **CBD Fee Revenue by Taxi Type** : la quasi-totalite des frais CBD ($1.9M) provient des taxis yellow, les taxis green ne contribuant qu'une fraction negligeable.
+
+#### Operations Dashboard
+
+![Streamlit - Operations Demand Heatmap](img/streamlit-operations-demand-heatmap.png)
+
+Page operationnelle avec KPIs cles : 3.69M de courses, vitesse moyenne de 47.0 mph, duree moyenne de 18.6 min, 3 vendeurs actifs, heure de pointe a 18h00, et distance moyenne de 11.9 miles.
+
+La **Hourly Demand Heatmap** est une visualisation en carte de chaleur croisant les jours de la semaine (axe Y) et les heures de la journee (axe X). Les couleurs chaudes (jaune/orange) indiquent une forte demande. On observe clairement :
+- Les pics de demande en soiree (17h-22h), particulierement le jeudi et vendredi
+- Une demande soutenue le samedi en fin de nuit (0h-4h), typique de la vie nocturne
+- Le creux de demande en semaine entre 4h et 7h du matin
+- Le dimanche comme jour le plus calme
+
+#### Operations - Trip Duration Distribution
+
+![Streamlit - Trip Duration Distribution](img/streamlit-operations-trip-duration.png)
+
+Analyse de la distribution des durees de course :
+
+- **Trip Duration Distribution** : histogramme montrant la repartition des courses par tranche de duree. La tranche 10-20 min domine avec 1.4M de courses, suivie de 5-10 min (900K) et 20-30 min (600K). Les courses de plus de 60 min sont rares (<100K). Les taxis yellow (jaune) dominent largement les taxis green (turquoise) dans toutes les tranches.
+- **Avg Fare & Distance by Duration** : correlation entre duree, tarif moyen (barres oranges) et distance moyenne (ligne turquoise). Le tarif augmente de $20 (0-5 min) a $105 (60+ min), tandis que la distance passe de 2 miles a 24 miles. La relation est quasi-lineaire, confirmant la coherence du modele tarifaire.
+
+---
+
 ## License
 
 Private project.

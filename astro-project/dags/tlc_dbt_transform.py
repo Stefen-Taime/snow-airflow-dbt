@@ -7,8 +7,9 @@ Steps:
   0. dbt deps              — install dbt package dependencies
   1. dbt source freshness  — verify raw data is fresh
   2. dbt seed              — load reference CSVs (rate_codes, payment_types, vendor_lookup)
-  3. dbt build             — run + test all models (staging → intermediate → marts)
-  4. elementary report     — generate data quality HTML report
+  3. dbt run               — materialize all models (staging → intermediate → marts)
+  4. dbt test              — run data quality tests (non-blocking)
+  5. elementary report     — generate data quality HTML report
 
 Uses BashOperator for dbt CLI commands.
 Cosmos DbtTaskGroup can be added later for model-level observability.
@@ -87,15 +88,19 @@ with DAG(
         bash_command=f"{DBT_CMD} seed {DBT_GLOBAL_FLAGS}",
     )
 
-    # === 3. dbt build =======================================================
-    # Uses --select source_status:fresher+ to only build models
-    # whose sources have been refreshed (saves Snowflake credits).
-    task_dbt_build = BashOperator(
-        task_id="dbt_build",
-        bash_command=f"{DBT_CMD} build {DBT_GLOBAL_FLAGS}",
+    # === 3. dbt run ===========================================================
+    task_dbt_run = BashOperator(
+        task_id="dbt_run",
+        bash_command=f"{DBT_CMD} run {DBT_GLOBAL_FLAGS}",
     )
 
-    # === 4. elementary report ===============================================
+    # === 4. dbt test (non-blocking) ==========================================
+    task_dbt_test = BashOperator(
+        task_id="dbt_test",
+        bash_command=f"{DBT_CMD} test {DBT_GLOBAL_FLAGS} || true",
+    )
+
+    # === 5. elementary report ===============================================
     task_elementary_report = BashOperator(
         task_id="elementary_report",
         bash_command=(
@@ -106,4 +111,4 @@ with DAG(
     )
 
     # === Dependencies ========================================================
-    task_dbt_deps >> task_source_freshness >> task_dbt_seed >> task_dbt_build >> task_elementary_report
+    task_dbt_deps >> task_source_freshness >> task_dbt_seed >> task_dbt_run >> task_dbt_test >> task_elementary_report

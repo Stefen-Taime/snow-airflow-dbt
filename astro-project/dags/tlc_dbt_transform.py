@@ -80,6 +80,8 @@ with DAG(
     )
 
     # === 2. elementary report ===============================================
+    # Note: edr internally runs 'dbt deps' in its own package directory which
+    # may be read-only on Astronomer. Using || true to prevent pipeline failure.
     task_elementary_report = BashOperator(
         task_id="elementary_report",
         bash_command=(
@@ -89,7 +91,8 @@ with DAG(
             f"{DBT_CMD} deps --project-dir /tmp/dbt_project --profiles-dir /tmp/dbt_project && "
             f"edr report --project-dir /tmp/dbt_project "
             f"--profiles-dir /tmp/dbt_project "
-            f"--target-path /tmp/dbt_project/target/elementary_report.html"
+            f"--target-path /tmp/dbt_project/target/elementary_report.html || "
+            f"echo 'WARNING: elementary report failed, skipping'"
         ),
         cwd="/tmp",
     )
